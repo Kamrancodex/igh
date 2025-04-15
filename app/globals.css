@@ -1,0 +1,927 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 0% 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Height of the sticky header */
+}
+
+.prose {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.prose p {
+  @apply mb-6;
+}
+
+/* Find the brand-gradient-text class */
+.brand-gradient-text {
+  background: linear-gradient(to right, #000000, #ff6600, #000000);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+/* Animated gradient text */
+.animated-gradient {
+  background-size: 200% auto;
+  background-image: linear-gradient(to right, #000000, #ff6600, #000000, #ff6600, #000000);
+  animation: gradient-shift 8s linear infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* 3D text effect */
+.text-3d {
+  text-shadow:
+    0px 1px 0px rgba(0, 0, 0, 0.2),
+    0px 2px 0px rgba(0, 0, 0, 0.2),
+    0px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 4px 0px rgba(0, 0, 0, 0.1),
+    0px 5px 0px rgba(0, 0, 0, 0.1),
+    0px 6px 0px rgba(0, 0, 0, 0.1),
+    0px 7px 10px rgba(0, 0, 0, 0.5);
+  transform: perspective(500px) rotateX(5deg);
+  letter-spacing: 1px;
+}
+
+.brand-text {
+  color: #000;
+}
+
+.brand-text span {
+  color: #ff6600;
+}
+
+/* Enhanced shadow for business cards */
+.shadow-3xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+}
+
+/* Gallery Grid Layout */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  height: 100vh;
+  width: 100%;
+}
+
+.gallery-item {
+  position: relative;
+}
+
+.gallery-item-large-left {
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
+}
+
+.gallery-item-medium-right {
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+
+.gallery-item-small-right {
+  grid-column: 3 / 4;
+  grid-row: 2 / 3;
+}
+
+.gallery-item-medium-left {
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
+.gallery-item-medium-right-bottom {
+  grid-column: 2 / 4;
+  grid-row: 3 / 4;
+}
+
+/* Responsive adjustments for gallery */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 1fr);
+    height: auto;
+  }
+
+  .gallery-item {
+    height: 50vh;
+  }
+
+  .gallery-item-large-left,
+  .gallery-item-medium-right,
+  .gallery-item-small-right,
+  .gallery-item-medium-left,
+  .gallery-item-medium-right-bottom {
+    grid-column: 1;
+  }
+
+  .gallery-item-large-left {
+    grid-row: 1;
+  }
+
+  .gallery-item-medium-right {
+    grid-row: 2;
+  }
+
+  .gallery-item-small-right {
+    grid-row: 3;
+  }
+
+  .gallery-item-medium-left {
+    grid-row: 4;
+  }
+
+  .gallery-item-medium-right-bottom {
+    grid-row: 5;
+  }
+}
+
+/* Add these styles to enhance the hover effects for touch devices */
+
+/* Ensure hover effects work on touch devices */
+@media (hover: none) {
+  .group:active .group-hover\:opacity-100 {
+    opacity: 1;
+  }
+
+  .group:active .group-hover\:translate-y-0 {
+    transform: translateY(0);
+  }
+
+  .group:active .group-hover\:scale-105,
+  .group:active .group-hover\:scale-110 {
+    transform: scale(1.05);
+  }
+}
+
+/* Testimonials Section Styles */
+.testimonial-row-right,
+.testimonial-row-left {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.testimonial-track-right,
+.testimonial-track-left {
+  display: flex;
+  width: max-content;
+  animation-duration: 40s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.testimonial-track-right {
+  animation-name: scroll-right;
+}
+
+.testimonial-track-left {
+  animation-name: scroll-left;
+}
+
+.testimonial-card {
+  flex: 0 0 auto;
+  width: 400px;
+  background-color: #f8f8f8;
+  border: 1px solid #eaeaea;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+.dark .testimonial-card {
+  background-color: #1f1f1f;
+  border-color: #333;
+  color: #f0f0f0;
+}
+
+.dark .testimonial-card h3 {
+  color: #f0f0f0;
+}
+
+.dark .testimonial-card p {
+  color: #d0d0d0;
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Pause animation on hover */
+.testimonial-row-right:hover .testimonial-track-right,
+.testimonial-row-left:hover .testimonial-track-left {
+  animation-play-state: paused;
+}
+
+/* Responsive adjustments for testimonials */
+@media (max-width: 768px) {
+  .testimonial-card {
+    width: 300px;
+    padding: 1rem;
+  }
+}
+
+/* Fix the scroll animations */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+.animate-in {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Make sure these classes work properly */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-in {
+  opacity: 0;
+}
+
+/* Ensure delays work correctly */
+.delay-100 {
+  transition-delay: 100ms !important;
+}
+
+.delay-200 {
+  transition-delay: 200ms !important;
+}
+
+.delay-300 {
+  transition-delay: 300ms !important;
+}
+
+.delay-400 {
+  transition-delay: 400ms !important;
+}
+
+.delay-500 {
+  transition-delay: 500ms !important;
+}
+
+/* Add a fallback to ensure content is visible even if animations fail */
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Social icons animation */
+.social-icons-container {
+  position: relative;
+}
+
+.social-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  color: #111;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .social-icon-link {
+  background-color: #333;
+  color: #f0f0f0;
+}
+
+.social-icon-link:hover {
+  background-color: #111;
+  color: white;
+  transform: translateY(-5px);
+}
+
+.dark .social-icon-link:hover {
+  background-color: #f0f0f0;
+  color: #111;
+}
+
+.social-icon-link::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s ease;
+}
+
+.social-icon-link:hover::after {
+  transform: translate(-50%, -50%) scale(1.5);
+  opacity: 0;
+}
+
+/* Button animation */
+.group:hover .group-hover\:translate-x-1 {
+  transform: translateX(4px);
+}
+
+/* Team Member Card Styles */
+.team-member-card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.team-member-card:hover {
+  transform: translateY(-10px);
+}
+
+.team-social-icon {
+  transition: transform 0.2s ease;
+}
+
+.team-social-icon:hover {
+  transform: translateY(-3px);
+}
+
+/* Ensure the team member hover effect works on touch devices */
+@media (hover: none) {
+  .team-member-card:active .group-hover\:opacity-100 {
+    opacity: 1;
+  }
+}
+
+/* Impact Section Styles */
+.impact-number-light {
+  display: inline-block;
+  background-image: linear-gradient(135deg, #000000 0%, #333333 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Keep the original impact-number style for dark mode (will be used when dark mode is active) */
+.impact-number {
+  display: inline-block;
+  background-image: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+}
+
+.dark .impact-number-light {
+  background-image: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+/* Contact Form Styles */
+.contact-form-success {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.contact-form-success.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Footer Styles */
+footer a {
+  position: relative;
+}
+
+footer a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: black;
+  transition: width 0.3s ease;
+}
+
+.dark footer a::after {
+  background-color: white;
+}
+
+footer a:hover::after {
+  width: 100%;
+}
+
+/* Add these styles for the navigation */
+.nav-link {
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: black;
+  transition: width 0.3s ease;
+}
+
+.dark .nav-link::after {
+  background-color: white;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Adjust the top padding for the first section to account for the fixed header */
+#home {
+  padding-top: 5rem;
+}
+
+/* Add subtle section separators */
+section {
+  position: relative;
+}
+
+section::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.05), transparent);
+}
+
+.dark section::after {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent);
+}
+
+/* Ensure proper spacing between sections */
+section + section {
+  margin-top: 1px;
+}
+
+/* Dark mode styles for sections */
+.dark section {
+  background-color: #121212;
+  color: white;
+  border-color: #333;
+}
+
+.dark .bg-white {
+  background-color: #121212;
+}
+
+.dark .bg-gray-50 {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+}
+
+.dark .bg-gray-100 {
+  background-color: #222;
+}
+
+.dark .bg-gray-200 {
+  background-color: #333;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200 {
+  border-color: #333;
+}
+
+.dark .text-black {
+  color: white;
+}
+
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-700 {
+  color: #aaa;
+}
+
+.dark .border-gray-300 {
+  border-color: #444;
+}
+
+.dark .bg-black\/5 {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .border-black {
+  border-color: white;
+}
+
+/* Dark mode styles for cards */
+.dark .bg-gray-50 p,
+.dark .bg-gray-50 h3,
+.dark .bg-gray-50 h4 {
+  color: #f0f0f0;
+}
+
+/* What We Do cards */
+.dark [class*="bg-gray-50"] {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  border-color: #333;
+}
+
+.dark [class*="bg-gray-50"] p,
+.dark [class*="bg-gray-50"] h3,
+.dark [class*="bg-gray-50"] h4 {
+  color: #f0f0f0;
+}
+
+.dark [class*="bg-gray-50"] .text-gray-800 {
+  color: #f0f0f0;
+}
+
+.dark [class*="bg-gray-50"] .text-gray-700 {
+  color: #d0d0d0;
+}
+
+.dark [class*="bg-gray-50"] .text-gray-600 {
+  color: #b0b0b0;
+}
+
+/* Fix for the "What Sets Us Apart" section */
+.dark .mt-8.p-6.bg-gray-50 {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  border-color: #ff6600;
+}
+
+.dark .mt-8.p-6.bg-gray-50 h4,
+.dark .mt-8.p-6.bg-gray-50 p {
+  color: #f0f0f0;
+}
+
+/* Fix for the "Why Join Our Team?" section */
+.dark .mt-16.bg-gray-50 {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+}
+
+.dark .mt-16.bg-gray-50 h3,
+.dark .mt-16.bg-gray-50 h4 {
+  color: #f0f0f0;
+}
+
+.dark .mt-16.bg-gray-50 p {
+  color: #b0b0b0;
+}
+
+.dark .w-16.h-16.bg-black\/5 {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Add smooth transition for theme changes */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Ensure dark mode text colors are properly set */
+.dark body {
+  color: white;
+  background-color: #121212;
+}
+
+/* Update the nav-link active and hover states for dark mode */
+.dark .nav-link::after {
+  background-color: white;
+}
+
+.dark .nav-link:hover::after,
+.dark .nav-link.active::after {
+  width: 100%;
+}
+
+/* Update the brand-gradient-text for dark mode */
+.dark .brand-gradient-text {
+  background: linear-gradient(to right, #ffffff, #ff6600, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Update the animated gradient for dark mode */
+.dark .animated-gradient {
+  background-image: linear-gradient(to right, #ffffff, #ff6600, #ffffff, #ff6600, #ffffff);
+}
+
+/* Update the 3D text effect for dark mode */
+.dark .text-3d {
+  text-shadow:
+    0px 1px 0px rgba(255, 255, 255, 0.2),
+    0px 2px 0px rgba(255, 255, 255, 0.2),
+    0px 3px 0px rgba(255, 255, 255, 0.2),
+    0px 4px 0px rgba(255, 255, 255, 0.1),
+    0px 5px 0px rgba(255, 255, 255, 0.1),
+    0px 6px 0px rgba(255, 255, 255, 0.1),
+    0px 7px 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Fix for the contact form in dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  border-color: #444;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #888;
+}
+
+.dark label {
+  color: #d0d0d0;
+}
+
+/* Fix for the contact info icons in dark mode */
+.dark .bg-gray-100.p-3 {
+  background-color: #333;
+}
+
+.dark .font-semibold.text-lg {
+  color: #f0f0f0;
+}
+
+/* Fix for the newsletter form in dark mode */
+.dark footer input {
+  background-color: #1f1f1f;
+  border-color: #444;
+}
+
+.dark footer button {
+  background-color: #f0f0f0;
+  color: #121212;
+}
+
+.dark footer button:hover {
+  background-color: #d0d0d0;
+}
+
+/* Fix for the "What We Do" cards */
+.dark .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3.gap-6.md\:gap-8 > div {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  border-color: #333;
+}
+
+.dark .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3.gap-6.md\:gap-8 > div p {
+  color: #f0f0f0;
+}
+
+.dark .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3.gap-6.md\:gap-8 > div .w-12.h-12.bg-black\/5 {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3.gap-6.md\:gap-8 > div svg {
+  color: #d0d0d0;
+}
+
+/* Modern hero section styles */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dark .bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+/* Floating animations for shapes */
+@keyframes float-slow {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@keyframes float-medium {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-20px) rotate(-5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@keyframes float-fast {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-25px) rotate(8deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-medium 6s ease-in-out infinite;
+}
+
+.animate-float-fast {
+  animation: float-fast 4s ease-in-out infinite;
+}
+
+/* Stats card hover effect */
+.stats-card {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.stats-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.1) 0%, rgba(255, 102, 0, 0.05) 100%);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.dark .stats-card::before {
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.2) 0%, rgba(255, 102, 0, 0.1) 100%);
+}
+
+.stats-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card:hover::before {
+  opacity: 1;
+}
+
+.dark .stats-card:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Add these animation styles for the WHAT WE DO section */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-slow-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 30s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-slow-reverse 30s linear infinite;
+}
