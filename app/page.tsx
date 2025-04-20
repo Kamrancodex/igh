@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -26,6 +25,138 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import NewsletterSection from "../components/newsletter-section";
+
+// Custom hook for image loading
+const useImageLoad = (imageUrl: string) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!imageUrl) return;
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.onload = () => setIsLoaded(true);
+  }, [imageUrl]);
+
+  return isLoaded;
+};
+
+// Add these interfaces at the top of the file after imports
+interface Business {
+  _id: string; // Changed from id to _id to match API
+  name: string;
+  image: string;
+  description: string;
+  link: string;
+  socials: {
+    instagram: string;
+    facebook: string;
+    twitter: string;
+    website: string;
+  };
+}
+
+interface GalleryItem {
+  _id: string;
+  title: string;
+  image: string;
+  description: string;
+  size: "small" | "medium" | "large";
+  position: string;
+}
+
+// Add this interface with the others
+interface Testimonial {
+  id: number;
+  name: string;
+  title: string;
+  image: string;
+  quote: string;
+  logo: string;
+}
+
+// Add the testimonials data
+const testimonials: Testimonial[] = [
+  {
+    id: 1,
+    name: "James Wilson",
+    title: "Executive Chef, The Ritz-Carlton",
+    image:
+      "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "Icon Group transformed our dining experience with their innovative approach. Their attention to detail and understanding of hospitality trends helped us create a world-class restaurant.",
+    logo: "/ritz-carlton-inspired-crest.png",
+  },
+  {
+    id: 2,
+    name: "Sophia Chen",
+    title: "Operations Director, Four Seasons",
+    image:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "Working with Icon Group was seamless from start to finish. They listened to our needs and delivered a hospitality experience that exceeded all expectations. Highly recommended!",
+    logo: "/abstract-seasonal-representation.png",
+  },
+  {
+    id: 3,
+    name: "Michael Rodriguez",
+    title: "F&B Manager, Hilton Hotels",
+    image:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "Icon Group's expertise in hospitality management is unmatched. They revitalized our food and beverage program, resulting in a 40% increase in revenue and outstanding guest satisfaction.",
+    logo: "/stylized-hotel-exterior.png",
+  },
+  {
+    id: 4,
+    name: "Emily Johnson",
+    title: "CEO, Boutique Hotel Collection",
+    image:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "The team at Icon Group understands the unique challenges of boutique hospitality. Their strategic guidance helped us create distinctive experiences that our guests absolutely love.",
+    logo: "/elegant-boutique-hotel-emblem.png",
+  },
+  {
+    id: 5,
+    name: "David Thompson",
+    title: "General Manager, Waldorf Astoria",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "Icon Group's consulting services transformed our approach to luxury hospitality. Their innovative ideas and flawless execution have set a new standard for excellence in our properties.",
+    logo: "/Waldorf Astoria Inspired Emblem.png",
+  },
+  {
+    id: 6,
+    name: "Sarah Martinez",
+    title: "Marketing Director, Marriott International",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "The strategic vision that Icon Group brought to our hospitality marketing was game-changing. They understand the pulse of the industry and deliver results that speak for themselves.",
+    logo: "/marriott-logo-generic.png",
+  },
+  {
+    id: 7,
+    name: "Robert Kim",
+    title: "Owner, Luxury Restaurant Group",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "Icon Group's restaurant management expertise helped us launch three successful venues in just two years. Their operational excellence and creative vision are truly exceptional.",
+    logo: "/elegant-dining-emblem.png",
+  },
+  {
+    id: 8,
+    name: "Jennifer Lee",
+    title: "Events Director, Peninsula Hotels",
+    image:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
+    quote:
+      "Our collaboration with Icon Group elevated our events program to new heights. Their attention to detail and innovative concepts have made us the premier destination for luxury events.",
+    logo: "/elegant-hotel-crest.png",
+  },
+];
 
 // Replace the existing Home component with this enhanced version that includes micro-interactions
 export default function Home() {
@@ -240,9 +371,10 @@ export default function Home() {
         );
 
         if (rect.top <= viewHeight && rect.bottom >= 0) {
-          const distance = window.scrollY - (el.offsetTop - viewHeight);
+          const htmlEl = el as HTMLElement;
+          const distance = window.scrollY - (htmlEl.offsetTop - viewHeight);
           const parallaxValue = distance * Number.parseFloat(speed);
-          el.style.transform = `translateY(${parallaxValue}px)`;
+          htmlEl.style.transform = `translateY(${parallaxValue}px)`;
         }
       });
     };
@@ -446,25 +578,191 @@ export default function Home() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  // Update the state definitions
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [displayCount, setDisplayCount] = useState(4);
+  const [galleryDisplayCount, setGalleryDisplayCount] = useState(6);
+  const [galleryLoading, setGalleryLoading] = useState(true);
+  const [galleryHasMore, setGalleryHasMore] = useState(true);
+
+  // Update the fetchBusinesses function
+  const fetchBusinesses = async () => {
+    try {
+      const res = await fetch("/api/businesses");
+      if (!res.ok) {
+        throw new Error("Failed to fetch businesses");
+      }
+      const data = await res.json();
+      setBusinesses(data);
+      setHasMore(data.length > displayCount);
+      setError("");
+    } catch (err) {
+      console.error("Error fetching businesses:", err);
+      setError("Failed to load businesses");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMore = () => {
+    setDisplayCount((prev) => {
+      const newCount = prev + 4;
+      setHasMore(businesses.length > newCount);
+      return newCount;
+    });
+  };
+
+  // Business Skeleton Component
+  const BusinessSkeleton = () => (
+    <div className="relative overflow-hidden rounded-xl shadow-2xl animate-pulse">
+      <div className="aspect-[16/9] w-full bg-gray-200"></div>
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="flex flex-col justify-between gap-4">
+          <div>
+            <div className="h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+          </div>
+          <div className="flex gap-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-8 w-8 bg-gray-200 rounded-full"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Update the error handling in fetch functions
+  const fetchGalleryItems = async () => {
+    try {
+      setGalleryLoading(true);
+      const response = await fetch("/api/gallery", {
+        headers: {
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Pre-load first 6 images
+        const firstSixImages = data.images.slice(0, 6);
+        firstSixImages.forEach((item: GalleryItem) => {
+          const img = document.createElement("img");
+          img.src = item.image;
+          img.loading = "eager";
+        });
+
+        setGalleryItems(data.images);
+        setGalleryHasMore(data.images.length > galleryDisplayCount);
+      } else {
+        throw new Error(data.error || "Failed to fetch gallery items");
+      }
+    } catch (error) {
+      console.error("Error fetching gallery items:", error);
+      setError(error instanceof Error ? error.message : "An error occurred");
+    } finally {
+      setGalleryLoading(false);
+    }
+  };
+
+  // Add intersection observer for lazy loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              observer.unobserve(img);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "50px",
+        threshold: 0.1,
+      }
+    );
+
+    // Observe all gallery images
+    document.querySelectorAll(".gallery-image").forEach((img) => {
+      observer.observe(img);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [galleryItems]);
+
+  const loadMoreGallery = () => {
+    setGalleryDisplayCount((prev) => {
+      const newCount = prev + 6;
+      setGalleryHasMore(galleryItems.length > newCount);
+      return newCount;
+    });
+  };
+
+  // Gallery Skeleton Component
+  const GallerySkeleton = () => (
+    <div className="gallery-item gallery-item-medium-center relative overflow-hidden rounded-lg animate-pulse">
+      <div className="w-full h-full bg-gray-200 aspect-[4/3]"></div>
+      <div className="absolute inset-0 flex flex-col justify-end p-8">
+        <div className="h-6 bg-gray-300 rounded w-1/4 mb-3"></div>
+        <div className="h-8 bg-gray-300 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-gray-300 rounded w-full mb-4"></div>
+        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+      </div>
+    </div>
+  );
+
+  // Update form submission
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus("submitting");
 
-    // Simulate form submission
-    setTimeout(() => {
-      setFormStatus("success");
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFormStatus("success");
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+
+        // Reset form status after 3 seconds
+        setTimeout(() => {
+          setFormStatus("idle");
+        }, 3000);
+      } else {
+        throw new Error(data.error || "Failed to send message");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setFormStatus("error");
 
       // Reset form status after 3 seconds
       setTimeout(() => {
         setFormStatus("idle");
       }, 3000);
-    }, 1500);
+    }
   };
 
   useEffect(() => {
@@ -584,193 +882,6 @@ export default function Home() {
       window.removeEventListener("scroll", handleHeaderScroll);
     };
   }, []);
-
-  // Business data
-  const businesses = [
-    {
-      id: 1,
-      name: "Majestic Hall",
-      image: "/business-1.webp",
-      description: "Where Dreams Come True",
-      link: "https://majestic-rdj.media",
-      socials: {
-        instagram: "https://www.instagram.com/Majestichallcle",
-        facebook: "https://www.facebook.com/154478397755479",
-        twitter: "#",
-        website: "#",
-      },
-    },
-    {
-      id: 2,
-      name: "Marigold",
-      image:
-        "https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Luxury beachfront experience",
-      link: "https://test1-rdj.media/",
-      socials: {
-        instagram: "https://www.instagram.com/marigoldcateringevents/",
-        facebook: "https://www.facebook.com/MarigoldCatering",
-        twitter: "#",
-        website: "#",
-      },
-    },
-    {
-      id: 3,
-      name: "Danny Boy's",
-      image:
-        "https://images.unsplash.com/photo-1470337458703-46ad1756a187?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Sophisticated cocktail bar & lounge",
-      link: "https://www.dannyboyspizza.com/",
-      socials: {
-        instagram: "https://www.instagram.com/dannyboyspizza1991",
-        facebook: "https://www.facebook.com/dannyboyspizza1991",
-        twitter: "#",
-        website: "#",
-      },
-    },
-    {
-      id: 4,
-      name: "Harvest Table",
-      image:
-        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Farm-to-table dining experience",
-      link: "/businesses/harvest",
-      socials: {
-        instagram: "#",
-        facebook: "#",
-        twitter: "#",
-        website: "#",
-      },
-    },
-  ];
-
-  // Gallery data
-  const galleryItems = [
-    {
-      id: 1,
-      title: "LUXURY DINING",
-      image:
-        "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      size: "large", // large, medium, small
-      position: "top-left",
-    },
-    {
-      id: 2,
-      title: "ELEGANT SPACES",
-      image:
-        "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      size: "medium",
-      position: "top-right",
-    },
-    {
-      id: 3,
-      title: "CRAFT COCKTAILS",
-      image:
-        "https://images.unsplash.com/photo-1470337458703-46ad1756a187?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      size: "small",
-      position: "middle-right",
-    },
-    {
-      id: 4,
-      title: "BEACHFRONT VIEWS",
-      image:
-        "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      size: "medium",
-      position: "bottom-left",
-    },
-    {
-      id: 5,
-      title: "CULINARY EXCELLENCE",
-      image:
-        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      size: "medium",
-      position: "bottom-right",
-    },
-  ];
-
-  // Testimonials data
-  const testimonials = [
-    {
-      id: 1,
-      name: "James Wilson",
-      title: "Executive Chef, The Ritz-Carlton",
-      image:
-        "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "Icon Group transformed our dining experience with their innovative approach. Their attention to detail and understanding of hospitality trends helped us create a world-class restaurant.",
-      logo: "/ritz-carlton-inspired-crest.png",
-    },
-    {
-      id: 2,
-      name: "Sophia Chen",
-      title: "Operations Director, Four Seasons",
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "Working with Icon Group was seamless from start to finish. They listened to our needs and delivered a hospitality experience that exceeded all expectations. Highly recommended!",
-      logo: "/abstract-seasonal-representation.png",
-    },
-    {
-      id: 3,
-      name: "Michael Rodriguez",
-      title: "F&B Manager, Hilton Hotels",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "Icon Group's expertise in hospitality management is unmatched. They revitalized our food and beverage program, resulting in a 40% increase in revenue and outstanding guest satisfaction.",
-      logo: "/stylized-hotel-exterior.png",
-    },
-    {
-      id: 4,
-      name: "Emily Johnson",
-      title: "CEO, Boutique Hotel Collection",
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "The team at Icon Group understands the unique challenges of boutique hospitality. Their strategic guidance helped us create distinctive experiences that our guests absolutely love.",
-      logo: "/elegant-boutique-hotel-emblem.png",
-    },
-    {
-      id: 5,
-      name: "David Thompson",
-      title: "General Manager, Waldorf Astoria",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "Icon Group's consulting services transformed our approach to luxury hospitality. Their innovative ideas and flawless execution have set a new standard for excellence in our properties.",
-      logo: "/Waldorf Astoria Inspired Emblem.png",
-    },
-    {
-      id: 6,
-      name: "Sarah Martinez",
-      title: "Marketing Director, Marriott International",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "The strategic vision that Icon Group brought to our hospitality marketing was game-changing. They understand the pulse of the industry and deliver results that speak for themselves.",
-      logo: "/marriott-logo-generic.png",
-    },
-    {
-      id: 7,
-      name: "Robert Kim",
-      title: "Owner, Luxury Restaurant Group",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "Icon Group's restaurant management expertise helped us launch three successful venues in just two years. Their operational excellence and creative vision are truly exceptional.",
-      logo: "/elegant-dining-emblem.png",
-    },
-    {
-      id: 8,
-      name: "Jennifer Lee",
-      title: "Events Director, Peninsula Hotels",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=256&q=80",
-      quote:
-        "Our collaboration with Icon Group elevated our events program to new heights. Their attention to detail and innovative concepts have made us the premier destination for luxury events.",
-      logo: "/elegant-hotel-crest.png",
-    },
-  ];
 
   // Team values data
   const teamValues = [
@@ -986,11 +1097,36 @@ export default function Home() {
     };
   }, []);
 
+  // Add back the useEffect hooks after the fetchBusinesses and fetchGalleryItems functions
+  useEffect(() => {
+    fetchBusinesses();
+  }, [page]);
+
+  useEffect(() => {
+    fetchGalleryItems();
+  }, []);
+
+  const generateParticleStyle = (index: number) => {
+    // Use deterministic values based on index instead of random
+    const left = ((index * 17) % 100).toFixed(2);
+    const top = ((index * 23) % 100).toFixed(2);
+    const width = (3 + (index % 5)).toFixed(2);
+    const height = (2 + (index % 4)).toFixed(2);
+    const duration = (10 + (index % 10)).toFixed(2);
+    const delay = (index % 5).toFixed(2);
+
+    return {
+      left: `${left}%`,
+      top: `${top}%`,
+      width: `${width}px`,
+      height: `${height}px`,
+      animationDuration: `${duration}s`,
+      animationDelay: `${delay}s`,
+    };
+  };
+
   return (
     <div className="min-h-screen">
-      {/* Now remove the cursor elements from the JSX since we're creating them dynamically // Find and remove these
-      lines from the JSX: */}
-      {/* Custom cursor */}
       <div
         className="scroll-progress"
         style={{ width: `${scrollProgress}%` }}
@@ -1007,17 +1143,6 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md transition-all duration-300 overflow-x-hidden">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center h-20">
-            {/* Find the header section with the text logo and replace it with the image logo */}
-
-            {/* Replace this part in the header: */}
-            {/* <div className="flex items-center">
-              <div className="flex items-center">
-                <span className="text-white text-4xl font-bold text-gradient-animate">h</span>
-                <span className="text-orange-500 ml-1 text-lg">group</span>
-              </div>
-            </div> */}
-
-            {/* With this: */}
             <div className="flex items-center">
               <div className="logo-container relative">
                 <Image
@@ -1027,7 +1152,6 @@ export default function Home() {
                   height={40}
                   className="logo-image"
                 />
-                <div className="absolute inset-0 logo-glow"></div>
               </div>
             </div>
 
@@ -1104,18 +1228,12 @@ export default function Home() {
         >
           {/* Animated background particles */}
           <div className="particles-bg">
-            {[...Array(20)].map((_, i) => (
+            {Array.from({ length: 50 }).map((_, index) => (
               <span
-                key={i}
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  width: `${Math.random() * 5 + 2}px`,
-                  height: `${Math.random() * 5 + 2}px`,
-                  animationDuration: `${Math.random() * 10 + 10}s`,
-                  animationDelay: `${Math.random() * 5}s`,
-                }}
-              ></span>
+                key={index}
+                className="particle"
+                style={generateParticleStyle(index)}
+              />
             ))}
           </div>
 
@@ -1270,7 +1388,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Businesses We Own Section */}
+        {/* Update Businesses Section */}
         <section
           id="businesses"
           className="py-24 bg-white border-t border-gray-100 section-reveal"
@@ -1280,84 +1398,115 @@ export default function Home() {
               BUSINESSES WE OWN
             </h2>
 
+            {error && (
+              <div className="text-red-500 text-center mb-8">{error}</div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 stagger-children">
-              {businesses.map((business, index) => (
-                <div
-                  key={business.id}
-                  className={`group relative overflow-hidden rounded-xl shadow-2xl transition-all duration-500 hover:shadow-3xl animate-on-scroll fade-in-up delay-${
-                    index * 100
-                  } hover-card tilt-element`}
-                  ref={tiltElementRef}
-                >
-                  <div className="relative aspect-[16/9] w-full overflow-hidden zoom-on-hover">
-                    <Image
-                      src={business.image || "/placeholder.svg"}
-                      alt={business.name}
-                      width={800}
-                      height={600}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-80"></div>
-                  </div>
+              {loading ? (
+                // Show skeletons while loading
+                Array(4)
+                  .fill(0)
+                  .map((_, index) => (
+                    <BusinessSkeleton key={`skeleton-${index}`} />
+                  ))
+              ) : businesses.length > 0 ? (
+                // Show actual businesses
+                businesses.slice(0, displayCount).map((business, index) => (
+                  <div
+                    key={business._id}
+                    className={`group relative overflow-hidden rounded-xl shadow-2xl transition-all duration-500 hover:shadow-3xl animate-on-scroll fade-in-up delay-${
+                      index * 100
+                    } hover-card tilt-element`}
+                    ref={tiltElementRef}
+                  >
+                    <div className="relative aspect-[16/9] w-full overflow-hidden zoom-on-hover">
+                      <Image
+                        src={business.image || "/placeholder.svg"}
+                        alt={business.name}
+                        width={800}
+                        height={600}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-80"></div>
+                    </div>
 
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <div className="flex flex-col justify-between gap-4">
-                      <div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                          {business.name}
-                        </h3>
-                        <p className="text-sm md:text-base text-white/80 mb-4">
-                          {business.description}
-                        </p>
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <div className="flex flex-col justify-between gap-4">
+                        <div>
+                          <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                            {business.name}
+                          </h3>
+                          <p className="text-sm md:text-base text-white/80 mb-4">
+                            {business.description}
+                          </p>
 
-                        <Link
-                          href={business.link}
-                          className="inline-flex items-center text-white border-b-2 border-white pb-1 transition-all hover:pb-2"
-                        >
-                          Explore{" "}
-                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-                        </Link>
-                      </div>
+                          <Link
+                            href={business.link}
+                            className="inline-flex items-center text-white border-b-2 border-white pb-1 transition-all hover:pb-2"
+                          >
+                            Explore{" "}
+                            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                          </Link>
+                        </div>
 
-                      <div className="flex gap-3">
-                        <Link
-                          href={business.socials.instagram}
-                          className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                          aria-label={`${business.name} Instagram`}
-                        >
-                          <Instagram className="h-4 w-4 text-white" />
-                        </Link>
-                        <Link
-                          href={business.socials.facebook}
-                          className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                          aria-label={`${business.name} Facebook`}
-                        >
-                          <Facebook className="h-4 w-4 text-white" />
-                        </Link>
-                        <Link
-                          href={business.socials.twitter}
-                          className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                          aria-label={`${business.name} Twitter`}
-                        >
-                          <Twitter className="h-4 w-4 text-white" />
-                        </Link>
-                        <Link
-                          href={business.socials.website}
-                          className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                          aria-label={`${business.name} Website`}
-                        >
-                          <Globe className="h-4 w-4 text-white" />
-                        </Link>
+                        <div className="flex gap-3">
+                          <Link
+                            href={business.socials.instagram}
+                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
+                            aria-label={`${business.name} Instagram`}
+                          >
+                            <Instagram className="h-4 w-4 text-white" />
+                          </Link>
+                          <Link
+                            href={business.socials.facebook}
+                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
+                            aria-label={`${business.name} Facebook`}
+                          >
+                            <Facebook className="h-4 w-4 text-white" />
+                          </Link>
+                          <Link
+                            href={business.socials.twitter}
+                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
+                            aria-label={`${business.name} Twitter`}
+                          >
+                            <Twitter className="h-4 w-4 text-white" />
+                          </Link>
+                          <Link
+                            href={business.socials.website}
+                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
+                            aria-label={`${business.name} Website`}
+                          >
+                            <Globe className="h-4 w-4 text-white" />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-12">
+                  No businesses found
                 </div>
-              ))}
+              )}
             </div>
+
+            {/* Load More Button */}
+            {hasMore && !loading && (
+              <div className="mt-12 text-center">
+                <button
+                  onClick={loadMore}
+                  className="px-8 py-4 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition-all duration-300 inline-flex items-center group"
+                >
+                  Load More
+                  <ChevronDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
+                </button>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Gallery Section */}
+        {/* Update Gallery Section */}
         <section
           id="gallery"
           className="py-24 bg-white border-t border-gray-100 section-reveal"
@@ -1369,128 +1518,86 @@ export default function Home() {
           </div>
 
           <div className="gallery-grid">
-            {/* Large image - top left */}
-            {/* Update the gallery section to work with the new animations
-            // Find the gallery section and update the image containers
-
-            // For the large image - top left */}
-            <div className="gallery-item gallery-item-large-left relative overflow-hidden group animate-on-scroll fade-in image-reveal">
-              <Image
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                alt="Luxury restaurant interior"
-                width={800}
-                height={600}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-end p-8">
-                <span className="inline-block px-3 py-1 bg-orange-500 text-white text-xs uppercase tracking-wider mb-3 rounded-sm">
-                  Featured
-                </span>
-                <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-md">
-                  Luxury Dining Experience
-                </h3>
-                <p className="text-white/90 max-w-md mb-4 drop-shadow-sm">
-                  Our flagship restaurant offers an unparalleled dining
-                  experience with world-class cuisine and impeccable service.
-                </p>
-                <Link
-                  href="/gallery"
-                  className="inline-flex items-center text-white text-sm border-b border-white/50 hover:border-white transition-all duration-300 pb-1 group"
-                >
-                  View Details
-                  <ArrowUpRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                </Link>
+            {galleryLoading ? (
+              Array(6)
+                .fill(0)
+                .map((_, index) => (
+                  <GallerySkeleton key={`skeleton-${index}`} />
+                ))
+            ) : galleryItems.length > 0 ? (
+              galleryItems.slice(0, galleryDisplayCount).map((item, index) => {
+                return (
+                  <div
+                    key={item._id}
+                    className={`gallery-item gallery-item-${item.size}-${item.position} relative overflow-hidden group animate-on-scroll fade-in image-reveal`}
+                  >
+                    <div className="w-full h-full relative">
+                      <div
+                        className={`absolute inset-0 bg-gray-200 animate-pulse opacity-100 transition-opacity duration-300`}
+                      ></div>
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        width={800}
+                        height={600}
+                        className="gallery-image w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                        loading={index < 6 ? "eager" : "lazy"}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        priority={index < 6}
+                        onLoadingComplete={(e) => {
+                          e.classList.remove("opacity-0");
+                          e.classList.add("opacity-100");
+                          const placeholder =
+                            e.parentElement?.querySelector(".bg-gray-200");
+                          if (placeholder) {
+                            placeholder.classList.remove("opacity-100");
+                            placeholder.classList.add("opacity-0");
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
+                      {index === 0 && (
+                        <span className="inline-block px-3 py-1 bg-orange-500 text-white text-xs uppercase tracking-wider mb-3 rounded-sm">
+                          Featured
+                        </span>
+                      )}
+                      <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-md">
+                        {item.title}
+                      </h3>
+                      <p className="text-white/90 max-w-md mb-4 drop-shadow-sm">
+                        {item.description}
+                      </p>
+                      <Link
+                        href="/gallery"
+                        className="inline-flex items-center text-white text-sm border-b border-white/50 hover:border-white transition-all duration-300 pb-1 group"
+                      >
+                        View Details
+                        <ArrowUpRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="col-span-full text-center py-12">
+                No gallery items found
               </div>
-            </div>
-
-            {/* Update the other gallery items similarly by removing the old overlay divs and keeping just the content */}
-            {/* Medium image - top right */}
-            <div className="gallery-item gallery-item-medium-right relative overflow-hidden group animate-on-scroll fade-in delay-100 image-reveal">
-              <Image
-                src="https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                alt="Elegant hotel lobby"
-                width={600}
-                height={400}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-end p-6">
-                <div className="transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out delay-75">
-                  <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                    Elegant Spaces
-                  </h3>
-                  <p className="text-white/90 text-sm drop-shadow-sm">
-                    Thoughtfully designed interiors that blend luxury with
-                    comfort.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Small image - middle right */}
-            <div className="gallery-item gallery-item-small-right relative overflow-hidden group animate-on-scroll fade-in delay-200 image-reveal">
-              <Image
-                src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                alt="Craft cocktail"
-                width={400}
-                height={300}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-end p-6">
-                <div className="transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out delay-100">
-                  <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                    Craft Cocktails
-                  </h3>
-                  <p className="text-white/90 text-sm drop-shadow-sm">
-                    Artisanal beverages crafted by expert mixologists.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Medium image - bottom left */}
-            <div className="gallery-item gallery-item-medium-left relative overflow-hidden group animate-on-scroll fade-in delay-300 image-reveal">
-              <Image
-                src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                alt="Beachfront resort"
-                width={600}
-                height={400}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-end p-6">
-                <div className="transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out delay-125">
-                  <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                    Beachfront Views
-                  </h3>
-                  <p className="text-white/90 text-sm drop-shadow-sm">
-                    Breathtaking oceanfront locations for unforgettable
-                    experiences.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Medium image - bottom right */}
-            <div className="gallery-item gallery-item-medium-right-bottom relative overflow-hidden group animate-on-scroll fade-in delay-400 image-reveal">
-              <Image
-                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                alt="Gourmet dish"
-                width={600}
-                height={400}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex flex-col justify-end p-6">
-                <div className="transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out delay-150">
-                  <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">
-                    Culinary Excellence
-                  </h3>
-                  <p className="text-white/90 text-sm drop-shadow-sm">
-                    Exquisite dishes prepared by award-winning chefs using the
-                    finest ingredients.
-                  </p>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
+
+          {/* Load More Button */}
+          {galleryHasMore && !galleryLoading && (
+            <div className="mt-12 text-center">
+              <button
+                onClick={loadMoreGallery}
+                className="px-8 py-4 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition-all duration-300 inline-flex items-center group"
+              >
+                Load More Gallery
+                <ChevronDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
+              </button>
+            </div>
+          )}
         </section>
 
         {/* Testimonials Section */}
@@ -2051,6 +2158,8 @@ export default function Home() {
                           </span>
                         ) : formStatus === "success" ? (
                           "Message Sent!"
+                        ) : formStatus === "error" ? (
+                          "Failed to send. Try again."
                         ) : (
                           <>
                             Send Message
@@ -2213,58 +2322,58 @@ export default function Home() {
                 </h3>
                 <ul className="space-y-4">
                   <li>
-                    <button
-                      onClick={() => scrollToSection("home")}
+                    <a
+                      href="#home"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                       Home
-                    </button>
+                    </a>
                   </li>
                   <li>
-                    <button
-                      onClick={() => scrollToSection("about")}
+                    <a
+                      href="#about"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                       About Us
-                    </button>
+                    </a>
                   </li>
                   <li>
-                    <button
-                      onClick={() => scrollToSection("businesses")}
+                    <a
+                      href="#businesses"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                       Businesses
-                    </button>
+                    </a>
                   </li>
                   <li>
-                    <button
-                      onClick={() => scrollToSection("gallery")}
+                    <a
+                      href="#gallery"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                       Gallery
-                    </button>
+                    </a>
                   </li>
                   <li>
-                    <button
-                      onClick={() => scrollToSection("team")}
+                    <a
+                      href="#team"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                       Team
-                    </button>
+                    </a>
                   </li>
                   <li>
-                    <button
-                      onClick={() => scrollToSection("contact")}
+                    <a
+                      href="#contact"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                       Contact
-                    </button>
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -2321,15 +2430,24 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex space-x-6 text-gray-500 text-sm">
-                  <button className="hover:text-orange-500 transition-colors underline-animation">
+                  <Link
+                    href="/privacy-policy"
+                    className="hover:text-orange-500 transition-colors underline-animation"
+                  >
                     Privacy Policy
-                  </button>
-                  <button className="hover:text-orange-500 transition-colors underline-animation">
+                  </Link>
+                  <Link
+                    href="/terms-of-service"
+                    className="hover:text-orange-500 transition-colors underline-animation"
+                  >
                     Terms of Service
-                  </button>
-                  <button className="hover:text-orange-500 transition-colors">
+                  </Link>
+                  <Link
+                    href="/sitemap"
+                    className="hover:text-orange-500 transition-colors"
+                  >
                     Sitemap
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
