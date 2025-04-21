@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import NewsletterSection from "../components/newsletter-section";
+import { Toaster, toast } from "sonner";
 
 // Custom hook for image loading
 const useImageLoad = (imageUrl: string) => {
@@ -747,6 +748,8 @@ export default function Home() {
           message: "",
         });
 
+        toast.success("Message sent successfully!");
+
         // Reset form status after 3 seconds
         setTimeout(() => {
           setFormStatus("idle");
@@ -757,6 +760,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error sending message:", error);
       setFormStatus("error");
+      toast.error("Failed to send message. Please try again.");
 
       // Reset form status after 3 seconds
       setTimeout(() => {
@@ -1127,6 +1131,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      <Toaster position="top-right" expand={true} richColors />
       <div
         className="scroll-progress"
         style={{ width: `${scrollProgress}%` }}
@@ -1506,98 +1511,86 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Update Gallery Section */}
+        {/* Gallery Section */}
         <section
           id="gallery"
-          className="py-24 bg-white border-t border-gray-100 section-reveal"
+          className="py-24 bg-white border-t border-gray-100"
         >
-          <div className="container mx-auto px-6 mb-16">
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-center mb-24 animate-on-scroll fade-in-up">
-              OUR GALLERY
-            </h2>
-          </div>
+          <div className="container mx-auto px-6">
+            <div className="max-w-2xl mx-auto text-center mb-16">
+              <h2 className="text-6xl md:text-7xl font-bold tracking-tighter mb-6">
+                OUR GALLERY
+              </h2>
+              <p className="text-gray-600">
+                Explore our collection of stunning hospitality projects and
+                experiences.
+              </p>
+            </div>
 
-          <div className="gallery-grid">
             {galleryLoading ? (
-              Array(6)
-                .fill(0)
-                .map((_, index) => (
-                  <GallerySkeleton key={`skeleton-${index}`} />
-                ))
-            ) : galleryItems.length > 0 ? (
-              galleryItems.slice(0, galleryDisplayCount).map((item, index) => {
-                return (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-[4/3] bg-gray-200 rounded-xl animate-pulse"
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {galleryItems.slice(0, 8).map((item, index) => (
                   <div
                     key={item._id}
-                    className={`gallery-item gallery-item-${item.size}-${item.position} relative overflow-hidden group animate-on-scroll fade-in image-reveal`}
+                    className={`relative group overflow-hidden rounded-xl ${
+                      index === 0 || index === 7
+                        ? "md:col-span-2 md:row-span-2"
+                        : ""
+                    }`}
                   >
-                    <div className="w-full h-full relative">
-                      <div
-                        className={`absolute inset-0 bg-gray-200 animate-pulse opacity-100 transition-opacity duration-300`}
-                      ></div>
+                    <div
+                      className={`${
+                        index === 0 || index === 7
+                          ? "aspect-square"
+                          : "aspect-[4/3]"
+                      }`}
+                    >
                       <Image
                         src={item.image}
                         alt={item.title}
-                        width={800}
-                        height={600}
-                        className="gallery-image w-full h-full object-cover opacity-0 transition-opacity duration-300"
-                        loading={index < 6 ? "eager" : "lazy"}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        priority={index < 6}
-                        onLoadingComplete={(e) => {
-                          e.classList.remove("opacity-0");
-                          e.classList.add("opacity-100");
-                          const placeholder =
-                            e.parentElement?.querySelector(".bg-gray-200");
-                          if (placeholder) {
-                            placeholder.classList.remove("opacity-100");
-                            placeholder.classList.add("opacity-0");
-                          }
-                        }}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes={
+                          index === 0 || index === 7
+                            ? "(max-width: 768px) 100vw, 50vw"
+                            : "(max-width: 768px) 50vw, 25vw"
+                        }
+                        priority={index < 4}
                       />
-                    </div>
-                    <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
-                      {index === 0 && (
-                        <span className="inline-block px-3 py-1 bg-orange-500 text-white text-xs uppercase tracking-wider mb-3 rounded-sm">
-                          Featured
-                        </span>
-                      )}
-                      <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-md">
-                        {item.title}
-                      </h3>
-                      <p className="text-white/90 max-w-md mb-4 drop-shadow-sm">
-                        {item.description}
-                      </p>
-                      <Link
-                        href="/gallery"
-                        className="inline-flex items-center text-white text-sm border-b border-white/50 hover:border-white transition-all duration-300 pb-1 group"
-                      >
-                        View Details
-                        <ArrowUpRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                      </Link>
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 p-4 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <h3 className="text-white font-semibold text-lg mb-1">
+                          {item.title}
+                        </h3>
+                        <p className="text-white/80 text-sm line-clamp-2">
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                );
-              })
-            ) : (
-              <div className="col-span-full text-center py-12">
-                No gallery items found
+                ))}
               </div>
             )}
-          </div>
 
-          {/* Load More Button */}
-          {galleryHasMore && !galleryLoading && (
-            <div className="mt-12 text-center">
-              <button
-                onClick={loadMoreGallery}
-                className="px-8 py-4 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition-all duration-300 inline-flex items-center group"
+            <div className="text-center mt-12">
+              <Link
+                href="/gallery"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition-all duration-300 group"
               >
-                Load More Gallery
-                <ChevronDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
-              </button>
+                View Full Gallery
+                <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
-          )}
+          </div>
         </section>
 
         {/* Testimonials Section */}

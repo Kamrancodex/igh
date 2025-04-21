@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { Providers } from "./providers";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Icon Group Hospitality",
+  description: "Luxury hospitality management and consulting services",
+};
 
 export default function RootLayout({
   children,
@@ -12,7 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <Providers>{children}</Providers>
+        <Toaster position="top-right" expand={true} richColors />
+        {children}
       </body>
     </html>
   );
