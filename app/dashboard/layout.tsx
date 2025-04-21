@@ -25,7 +25,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -54,7 +54,10 @@ export default function DashboardLayout({
                 </a>
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
+              <p className="text-black text-xl font-bold">
+                <span className="text-orange-500">Icon</span> Hospitality{" "}
+              </p>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
@@ -65,7 +68,24 @@ export default function DashboardLayout({
           </div>
         </div>
       </nav>
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">{children}</main>
+      <main className="flex-1 max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {children}
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p className="text-sm text-gray-500">
+              © 2025 Icon Group Hospitality. All rights reserved.
+            </p>
+            <p className="text-sm text-gray-500">
+              Powered by{" "}
+              <span className="font-semibold text-[#4475F2]">RDJ MEDIA</span>
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
