@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import { toast } from "sonner";
+import DeleteConfirmModal from "@/app/components/DeleteConfirmModal";
 
 interface Business {
   _id: string;
@@ -37,6 +38,8 @@ export default function BusinessesPage() {
       website: "",
     },
   });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [businessToDelete, setBusinessToDelete] = useState<string | null>(null);
 
   const fetchBusinesses = useCallback(async () => {
     console.log("fetching businesses");
@@ -139,9 +142,20 @@ export default function BusinessesPage() {
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this business?")) return;
+    setBusinessToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
 
-    const promise = fetch(`/api/businesses?id=${id}`, {
+  const handleConfirmDelete = async () => {
+    if (!businessToDelete) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to perform this action");
+      return;
+    }
+
+    const promise = fetch(`/api/businesses?id=${businessToDelete}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -482,6 +496,19 @@ export default function BusinessesPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setBusinessToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Business"
+        message="Are you sure you want to delete this business? This action cannot be undone."
+        itemType="business"
+      />
     </div>
   );
 }

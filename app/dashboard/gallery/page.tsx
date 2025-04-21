@@ -5,6 +5,7 @@ import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import Image from "next/image";
 import { toast } from "sonner";
+import DeleteConfirmModal from "@/app/components/DeleteConfirmModal";
 
 type Size = "small" | "medium" | "large";
 type Position =
@@ -38,18 +39,26 @@ export default function GalleryPage() {
     size: "medium" as Size,
     position: "top-left" as Position,
   });
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
-  const fetchGalleryItems = async (pageNum = 1) => {
+  useEffect(() => {
+    fetchGalleryItems();
+  }, []);
+
+  const fetchGalleryItems = async () => {
     try {
-      setIsLoading(true);
-      const response = await fetch(`/api/gallery?page=${pageNum}`);
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/gallery", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch gallery items");
       }
       const data = await response.json();
+      console.log("data", data);
       const validItems = data.images
         .filter((item: any) => item.category && item.category.trim() !== "")
         .map((item: any) => ({
@@ -58,14 +67,7 @@ export default function GalleryPage() {
           position: item.position || "center",
           category: item.category || "uncategorized",
         }));
-
-      if (pageNum === 1) {
-        setGalleryItems(validItems);
-      } else {
-        setGalleryItems((prev) => [...prev, ...validItems]);
-      }
-
-      setHasMore(data.hasMore);
+      setGalleryItems(validItems);
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -76,20 +78,8 @@ export default function GalleryPage() {
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
-      setIsLoadingMore(false);
     }
   };
-
-  const loadMore = async () => {
-    if (isLoadingMore || !hasMore) return;
-    setIsLoadingMore(true);
-    setPage((prev) => prev + 1);
-    await fetchGalleryItems(page + 1);
-  };
-
-  useEffect(() => {
-    fetchGalleryItems();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,9 +140,20 @@ export default function GalleryPage() {
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this gallery item?")) return;
+    setItemToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
 
-    const promise = fetch(`/api/gallery?id=${id}`, {
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to perform this action");
+      return;
+    }
+
+    const promise = fetch(`/api/gallery?id=${itemToDelete}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -262,18 +263,6 @@ export default function GalleryPage() {
           </div>
         ))}
       </div>
-
-      {hasMore && (
-        <div className="mt-6 text-center">
-          <button
-            onClick={loadMore}
-            disabled={isLoadingMore}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50"
-          >
-            {isLoadingMore ? "Loading..." : "Load More"}
-          </button>
-        </div>
-      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -437,6 +426,19 @@ export default function GalleryPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setItemToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Gallery Item"
+        message="Are you sure you want to delete this gallery item? This action cannot be undone."
+        itemType="gallery item"
+      />
     </div>
   );
 }
