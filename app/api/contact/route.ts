@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
+// Add GET handler for static builds
+export async function GET() {
+  return NextResponse.json({ message: "Contact API endpoint" });
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -54,3 +59,6 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// Add dynamic configuration
+export const dynamic = "force-dynamic";
