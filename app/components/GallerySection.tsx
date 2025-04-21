@@ -10,6 +10,8 @@ interface GalleryImage {
   image: string;
   description: string;
   category: string;
+  size?: string;
+  position?: string;
 }
 
 export default function GallerySection() {
@@ -20,15 +22,23 @@ export default function GallerySection() {
 
   const fetchImages = async () => {
     try {
-      const url = `/api/gallery${
-        selectedCategory !== "all" ? `?category=${selectedCategory}` : ""
-      }`;
-      const res = await fetch(url);
-      const data = await res.json();
+      setIsLoading(true);
+      const response = await fetch("/api/gallery", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          category: selectedCategory,
+          page: 1,
+        }),
+      });
 
-      if (!res.ok) throw new Error("Failed to fetch images");
+      if (!response.ok) throw new Error("Failed to fetch images");
 
+      const data = await response.json();
       setImages(data.images || []);
+
       if (data.categories?.length > 0) {
         setCategories(["all", ...data.categories]);
       }
@@ -40,12 +50,11 @@ export default function GallerySection() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     fetchImages();
   }, [selectedCategory]);
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-24 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-12">Our Gallery</h2>
 
@@ -55,7 +64,7 @@ export default function GallerySection() {
               key={category}
               onClick={() => setSelectedCategory(category)}
               disabled={isLoading}
-              className={`px-6 py-2.5 rounded-full font-medium ${
+              className={`px-6 py-2.5 rounded-full font-medium transition-colors ${
                 category === selectedCategory
                   ? "bg-black text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -75,27 +84,28 @@ export default function GallerySection() {
             {images.map((image, index) => (
               <div
                 key={image._id}
-                className="relative rounded-xl overflow-hidden shadow-lg"
+                className="group relative overflow-hidden rounded-xl shadow-lg bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="aspect-[4/3] relative">
                   <Image
                     src={image.image}
                     alt={image.title}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={index < 4}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      <span className="inline-block px-3 py-1 bg-white/20 text-white text-sm rounded-full mb-3">
+                        {image.category}
+                      </span>
                       <h3 className="text-xl font-semibold text-white mb-2">
                         {image.title}
                       </h3>
-                      <p className="text-sm text-white/90 line-clamp-2 mb-2">
+                      <p className="text-white/80 text-sm line-clamp-2">
                         {image.description}
                       </p>
-                      <span className="inline-block px-3 py-1 bg-white/20 text-white text-sm rounded-full">
-                        {image.category}
-                      </span>
                     </div>
                   </div>
                 </div>

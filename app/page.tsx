@@ -652,15 +652,16 @@ export default function Home() {
 
       if (response.ok) {
         // Pre-load first 6 images
-        const firstSixImages = data.images.slice(0, 6);
+        const images = data.images || [];
+        const firstSixImages = images.slice(0, 6);
         firstSixImages.forEach((item: GalleryItem) => {
           const img = document.createElement("img");
           img.src = item.image;
           img.loading = "eager";
         });
 
-        setGalleryItems(data.images);
-        setGalleryHasMore(data.images.length > galleryDisplayCount);
+        setGalleryItems(images);
+        setGalleryHasMore(images.length > galleryDisplayCount);
       } else {
         throw new Error(data.error || "Failed to fetch gallery items");
       }
@@ -1538,7 +1539,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                {galleryItems.slice(0, 8).map((item, index) => (
+                {(galleryItems || []).slice(0, 8).map((item, index) => (
                   <div
                     key={item._id}
                     className={`relative group overflow-hidden rounded-xl ${

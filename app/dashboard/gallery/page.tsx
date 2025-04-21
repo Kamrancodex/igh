@@ -6,6 +6,7 @@ import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import Image from "next/image";
 import { toast } from "sonner";
 import DeleteConfirmModal from "@/app/components/DeleteConfirmModal";
+import { Loader2, ChevronRight } from "lucide-react";
 
 type Size = "small" | "medium" | "large";
 type Position =
@@ -31,6 +32,9 @@ export default function GalleryPage() {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     image: "",
@@ -42,24 +46,29 @@ export default function GalleryPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchGalleryItems();
-  }, []);
-
-  const fetchGalleryItems = async () => {
+  const fetchGalleryItems = async (
+    pageNum: number = 1,
+    isLoadMore: boolean = false
+  ) => {
     try {
+      if (isLoadMore) {
+        setIsLoadingMore(true);
+      } else {
+        setIsLoading(true);
+      }
+
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/gallery", {
+      const response = await fetch(`/api/gallery?page=${pageNum}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (!response.ok) {
         throw new Error("Failed to fetch gallery items");
       }
-      const data = await response.json();
 
-      // Ensure we have an array of images
+      const data = await response.json();
       const images = data.images || [];
 
       // Filter and transform the items
@@ -69,13 +78,19 @@ export default function GalleryPage() {
         )
         .map((item: any) => ({
           ...item,
-          _id: item._id.toString(), // Ensure _id is a string
+          _id: item._id.toString(),
           size: item.size || "medium",
           position: item.position || "center",
           category: item.category || "uncategorized",
         }));
 
-      setGalleryItems(validItems);
+      if (isLoadMore) {
+        setGalleryItems((prev) => [...prev, ...validItems]);
+      } else {
+        setGalleryItems(validItems);
+      }
+
+      setHasMore(data.hasMore || false);
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -85,7 +100,23 @@ export default function GalleryPage() {
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
-      setIsLoading(false);
+      if (isLoadMore) {
+        setIsLoadingMore(false);
+      } else {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchGalleryItems(1);
+  }, []);
+
+  const loadMore = () => {
+    if (!isLoadingMore && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchGalleryItems(nextPage, true);
     }
   };
 
@@ -161,13 +192,11 @@ export default function GalleryPage() {
       return;
     }
 
-    const promise = fetch(`/api/gallery`, {
+    const promise = fetch(`/api/gallery?id=${itemToDelete}`, {
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ id: itemToDelete }),
     }).then(async (res) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -276,6 +305,28 @@ export default function GalleryPage() {
           </div>
         ))}
       </div>
+
+      {hasMore && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={loadMore}
+            disabled={isLoadingMore}
+            className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isLoadingMore ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              <>
+                Load More
+                <ChevronRight className="w-5 h-5" />
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
