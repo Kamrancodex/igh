@@ -2,13 +2,34 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { Types } from "mongoose";
 
+interface Socials {
+  instagram: string;
+  facebook: string;
+  twitter: string;
+  website: string;
+}
+
+interface Business {
+  _id?: Types.ObjectId;
+  name: string;
+  image: string;
+  description: string;
+  link: string;
+  socials: Socials;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 // GET all businesses
 export async function GET(request: Request) {
   try {
     const client = await clientPromise;
     const db = client.db("hospitality");
 
-    const businesses = await db.collection("businesses").find({}).toArray();
+    const businesses = await db
+      .collection<Business>("businesses")
+      .find()
+      .toArray();
 
     // Transform the data to ensure consistent format
     const transformedBusinesses = businesses.map((business) => ({
@@ -40,16 +61,16 @@ export async function POST(request: Request) {
   try {
     const client = await clientPromise;
     const db = client.db("hospitality");
-    const data = await request.json();
+    const data = (await request.json()) as Omit<Business, "_id">;
 
-    const result = await db.collection("businesses").insertOne({
+    const result = await db.collection<Business>("businesses").insertOne({
       ...data,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
 
     const insertedBusiness = await db
-      .collection("businesses")
+      .collection<Business>("businesses")
       .findOne({ _id: result.insertedId });
 
     return NextResponse.json(insertedBusiness, { status: 201 });
@@ -68,9 +89,9 @@ export async function PUT(request: Request) {
     const client = await clientPromise;
     const db = client.db("hospitality");
     const data = await request.json();
-    const { id, ...updateData } = data;
+    const { id, ...updateData } = data as { id: string } & Partial<Business>;
 
-    const result = await db.collection("businesses").findOneAndUpdate(
+    const result = await db.collection<Business>("businesses").findOneAndUpdate(
       { _id: new Types.ObjectId(id) },
       {
         $set: {
@@ -114,7 +135,7 @@ export async function DELETE(request: Request) {
     const client = await clientPromise;
     const db = client.db("hospitality");
 
-    const result = await db.collection("businesses").deleteOne({
+    const result = await db.collection<Business>("businesses").deleteOne({
       _id: new Types.ObjectId(id),
     });
 

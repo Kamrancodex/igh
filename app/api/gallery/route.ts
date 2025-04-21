@@ -2,6 +2,22 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { Types } from "mongoose";
 
+interface GalleryItem {
+  _id?: Types.ObjectId;
+  title: string;
+  image: string;
+  description: string;
+  category: string;
+  size?: "small" | "medium" | "large";
+  position?:
+    | "top-left"
+    | "top-right"
+    | "center"
+    | "bottom-left"
+    | "bottom-right";
+  createdAt?: Date;
+}
+
 const ITEMS_PER_PAGE = 5;
 
 export const dynamic = "force-dynamic";
@@ -11,9 +27,9 @@ export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db("hospitality");
-    const collection = db.collection("gallery");
+    const collection = db.collection<GalleryItem>("gallery");
 
-    const images = await collection.find({}).toArray();
+    const images = await collection.find().toArray();
 
     return NextResponse.json({ images });
   } catch (error) {
@@ -31,11 +47,14 @@ export async function POST(request: Request) {
     const body = await request.json();
     const client = await clientPromise;
     const db = client.db("hospitality");
-    const collection = db.collection("gallery");
+    const collection = db.collection<GalleryItem>("gallery");
 
     // If category and page are provided, treat it as a fetch request
     if ("category" in body && "page" in body) {
-      const { category = "all", page = 1 } = body;
+      const { category = "all", page = 1 } = body as {
+        category: string;
+        page: number;
+      };
       const query = category === "all" ? {} : { category };
       const limit = 8;
       const skip = (page - 1) * limit;
@@ -53,8 +72,9 @@ export async function POST(request: Request) {
     }
 
     // Otherwise, treat it as a create request
+    const newItem = body as Omit<GalleryItem, "_id">;
     const result = await collection.insertOne({
-      ...body,
+      ...newItem,
       createdAt: new Date(),
     });
 
@@ -79,13 +99,13 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, ...updateData } = body;
+    const { id, ...updateData } = body as { id: string } & Partial<GalleryItem>;
 
     const client = await clientPromise;
     const db = client.db("hospitality");
 
     const result = await db
-      .collection("gallery")
+      .collection<GalleryItem>("gallery")
       .updateOne({ _id: new Types.ObjectId(id) }, { $set: updateData });
 
     if (result.matchedCount === 0) {
@@ -107,7 +127,7 @@ export async function PUT(request: Request) {
 // DELETE handler for removing gallery items
 export async function DELETE(request: Request) {
   try {
-    let id;
+    let id: string;
 
     // Try to get ID from query parameters first
     const { searchParams } = new URL(request.url);
@@ -139,9 +159,9 @@ export async function DELETE(request: Request) {
     const client = await clientPromise;
     const db = client.db("hospitality");
 
-    const result = await db.collection("gallery").deleteOne({
-      _id: new Types.ObjectId(id),
-    });
+    const result = await db
+      .collection<GalleryItem>("gallery")
+      .deleteOne({ _id: new Types.ObjectId(id) });
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
