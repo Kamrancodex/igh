@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { Types } from "mongoose";
+import { ObjectId } from "mongodb";
 
 interface Socials {
   instagram: string;
@@ -10,7 +10,7 @@ interface Socials {
 }
 
 interface Business {
-  _id?: Types.ObjectId;
+  _id?: ObjectId;
   name: string;
   image: string;
   description: string;
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 
     // Transform the data to ensure consistent format
     const transformedBusinesses = businesses.map((business) => ({
-      _id: business._id.toString(),
+      _id: business._id?.toString() || "",
       name: business.name || "",
       image: business.image || "",
       description: business.description || "",
@@ -92,7 +92,7 @@ export async function PUT(request: Request) {
     const { id, ...updateData } = data as { id: string } & Partial<Business>;
 
     const result = await db.collection<Business>("businesses").findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
+      { _id: new ObjectId(id) },
       {
         $set: {
           ...updateData,
@@ -136,7 +136,7 @@ export async function DELETE(request: Request) {
     const db = client.db("hospitality");
 
     const result = await db.collection<Business>("businesses").deleteOne({
-      _id: new Types.ObjectId(id),
+      _id: new ObjectId(id),
     });
 
     if (result.deletedCount === 0) {

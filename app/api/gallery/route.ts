@@ -1,39 +1,41 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { Types } from "mongoose";
-
-interface GalleryItem {
-  _id?: Types.ObjectId;
-  title: string;
-  image: string;
-  description: string;
-  category: string;
-  size?: "small" | "medium" | "large";
-  position?:
-    | "top-left"
-    | "top-right"
-    | "center"
-    | "bottom-left"
-    | "bottom-right";
-  createdAt?: Date;
-}
-
-const ITEMS_PER_PAGE = 5;
+import { ObjectId } from "mongodb";
 
 export const dynamic = "force-dynamic";
 
-// GET handler for fetching gallery images
+interface GalleryImage {
+  _id?: ObjectId;
+  title: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  createdAt?: Date;
+}
+
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db("hospitality");
-    const collection = db.collection<GalleryItem>("gallery");
+    const db = client.db();
 
-    const images = await collection.find().toArray();
+    const images = await db
+      .collection<GalleryImage>("gallery")
+      .find()
+      .limit(8)
+      .toArray();
 
-    return NextResponse.json({ images });
+    const transformedImages = images.map((img) => ({
+      _id: img._id?.toString() || "",
+      title: img.title || "",
+      description: img.description || "",
+      imageUrl: img.imageUrl || "",
+      category: img.category || "all",
+      createdAt: img.createdAt || new Date(),
+    }));
+
+    return NextResponse.json(transformedImages);
   } catch (error) {
-    console.error("Error fetching gallery images:", error);
+    console.error("Failed to fetch gallery images:", error);
     return NextResponse.json(
       { error: "Failed to fetch gallery images" },
       { status: 500 }
@@ -41,55 +43,47 @@ export async function GET() {
   }
 }
 
-// POST handler for creating new gallery items
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const { category = "all", page = 1 } = await request.json();
+    const limit = 8;
+    const skip = (page - 1) * limit;
+
     const client = await clientPromise;
-    const db = client.db("hospitality");
-    const collection = db.collection<GalleryItem>("gallery");
+    const db = client.db();
+    const collection = db.collection<GalleryImage>("gallery");
 
-    // If category and page are provided, treat it as a fetch request
-    if ("category" in body && "page" in body) {
-      const { category = "all", page = 1 } = body as {
-        category: string;
-        page: number;
-      };
-      const query = category === "all" ? {} : { category };
-      const limit = 8;
-      const skip = (page - 1) * limit;
+    // Build query based on category
+    const query = category === "all" ? {} : { category };
 
-      const [images, total] = await Promise.all([
-        collection.find(query).skip(skip).limit(limit).toArray(),
-        collection.countDocuments(query),
-      ]);
+    // Get total count for pagination
+    const total = await collection.countDocuments(query);
 
-      return NextResponse.json({
-        images,
-        hasMore: total > skip + limit,
-        total,
-      });
-    }
+    // Fetch images with pagination
+    const images = await collection
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .toArray();
 
-    // Otherwise, treat it as a create request
-    const newItem = body as Omit<GalleryItem, "_id">;
-    const result = await collection.insertOne({
-      ...newItem,
-      createdAt: new Date(),
-    });
-
-    if (!result.acknowledged) {
-      throw new Error("Failed to create gallery item");
-    }
+    const transformedImages = images.map((img) => ({
+      _id: img._id?.toString() || "",
+      title: img.title || "",
+      description: img.description || "",
+      imageUrl: img.imageUrl || "",
+      category: img.category || "all",
+      createdAt: img.createdAt || new Date(),
+    }));
 
     return NextResponse.json({
-      message: "Gallery item created successfully",
-      id: result.insertedId.toString(),
+      images: transformedImages,
+      total,
+      hasMore: total > skip + limit,
     });
   } catch (error) {
-    console.error("Error with gallery operation:", error);
+    console.error("Failed to fetch gallery images:", error);
     return NextResponse.json(
-      { error: "Failed to process gallery operation" },
+      { error: "Failed to fetch gallery images" },
       { status: 500 }
     );
   }
@@ -99,14 +93,16 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, ...updateData } = body as { id: string } & Partial<GalleryItem>;
+    const { id, ...updateData } = body as {
+      id: string;
+    } & Partial<GalleryImage>;
 
     const client = await clientPromise;
     const db = client.db("hospitality");
 
     const result = await db
-      .collection<GalleryItem>("gallery")
-      .updateOne({ _id: new Types.ObjectId(id) }, { $set: updateData });
+      .collection<GalleryImage>("gallery")
+      .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
 
     if (result.matchedCount === 0) {
       return NextResponse.json(
@@ -160,8 +156,8 @@ export async function DELETE(request: Request) {
     const db = client.db("hospitality");
 
     const result = await db
-      .collection<GalleryItem>("gallery")
-      .deleteOne({ _id: new Types.ObjectId(id) });
+      .collection<GalleryImage>("gallery")
+      .deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
