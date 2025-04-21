@@ -58,15 +58,23 @@ export default function GalleryPage() {
         throw new Error("Failed to fetch gallery items");
       }
       const data = await response.json();
-      console.log("data", data);
-      const validItems = data.images
-        .filter((item: any) => item.category && item.category.trim() !== "")
+
+      // Ensure we have an array of images
+      const images = data.images || [];
+
+      // Filter and transform the items
+      const validItems = images
+        .filter(
+          (item: any) => item && item.category && item.category.trim() !== ""
+        )
         .map((item: any) => ({
           ...item,
+          _id: item._id.toString(), // Ensure _id is a string
           size: item.size || "medium",
           position: item.position || "center",
           category: item.category || "uncategorized",
         }));
+
       setGalleryItems(validItems);
     } catch (error) {
       const errorMessage =
@@ -153,11 +161,13 @@ export default function GalleryPage() {
       return;
     }
 
-    const promise = fetch(`/api/gallery?id=${itemToDelete}`, {
+    const promise = fetch(`/api/gallery`, {
       method: "DELETE",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ id: itemToDelete }),
     }).then(async (res) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -169,6 +179,9 @@ export default function GalleryPage() {
       success: "Gallery item deleted successfully!",
       error: (err) => err.message || "Failed to delete gallery item",
     });
+
+    setIsDeleteModalOpen(false);
+    setItemToDelete(null);
   };
 
   const handleEdit = (item: GalleryItem) => {

@@ -6,13 +6,14 @@ import { toast } from "sonner";
 import DeleteConfirmModal from "@/app/components/DeleteConfirmModal";
 
 interface Message {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  subject: string;
+  phone: string;
   message: string;
   createdAt: string;
   status: "read" | "unread";
+  isArchived: boolean;
 }
 
 export default function MessagesPage() {
@@ -22,39 +23,124 @@ export default function MessagesPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
 
-  // ... existing fetchMessages function ...
+  useEffect(() => {
+    fetchMessages();
+  }, []);
 
-  // ... existing toggleMessageStatus function ...
+  const fetchMessages = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Authentication required");
+      }
 
-  // Updated delete message function
-  const deleteMessage = async (id: string) => {
-    setMessageToDelete(id);
-    setIsDeleteModalOpen(true);
+      const response = await fetch("/api/contact", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.error || "Failed to fetch messages");
+      }
+
+      setMessages(data.messages || []);
+      setError(null);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to fetch messages";
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleMessageStatus = async (
+    messageId: string,
+    currentStatus: string
+  ) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+
+      const newStatus = currentStatus === "read" ? "unread" : "read";
+      const response = await fetch("/api/contact", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          id: messageId,
+          status: newStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update message status");
+      }
+
+      setMessages(
+        messages.map((msg) =>
+          msg._id === messageId ? { ...msg, status: newStatus } : msg
+        )
+      );
+
+      toast.success(`Message marked as ${newStatus}`);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to update message status";
+      toast.error(errorMessage);
+    }
   };
 
   const handleConfirmDelete = async () => {
     if (!messageToDelete) return;
 
-    const promise = fetch(`/api/messages?id=${messageToDelete}`, {
-      method: "DELETE",
-    }).then(async (response) => {
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to delete message");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Authentication required");
       }
-      setMessages(messages.filter((msg) => msg.id !== messageToDelete));
-    });
 
-    toast.promise(promise, {
-      loading: "Deleting message...",
-      success: "Message deleted successfully",
-      error: (err) => err.message || "Failed to delete message",
-    });
+      const response = await fetch("/api/contact", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          id: messageToDelete,
+          isArchived: true,
+        }),
+      });
 
-    setMessageToDelete(null);
+      if (!response.ok) {
+        throw new Error("Failed to archive message");
+      }
+
+      setMessages(messages.filter((msg) => msg._id !== messageToDelete));
+      toast.success("Message archived successfully");
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to archive message";
+      toast.error(errorMessage);
+    } finally {
+      setMessageToDelete(null);
+      setIsDeleteModalOpen(false);
+    }
   };
 
-  // ... rest of the existing code ...
+  if (loading) return <div className="p-6">Loading messages...</div>;
+  if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
 
   return (
     <div className="p-6">
@@ -66,20 +152,62 @@ export default function MessagesPage() {
         <div className="space-y-4">
           {messages.map((message) => (
             <div
-              key={message.id}
+              key={message._id}
               className={`p-4 rounded-lg border ${
                 message.status === "unread"
                   ? "bg-blue-50 border-blue-200"
                   : "bg-white border-gray-200"
               }`}
             >
-              {/* ... existing message content ... */}
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <h3 className="font-semibold">{message.name}</h3>
+                  <p className="text-sm text-gray-600">{message.email}</p>
+                  {message.phone && (
+                    <p className="text-sm text-gray-600">{message.phone}</p>
+                  )}
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() =>
+                      toggleMessageStatus(message._id, message.status)
+                    }
+                    className="text-gray-600 hover:text-blue-600"
+                    title={
+                      message.status === "read"
+                        ? "Mark as unread"
+                        : "Mark as read"
+                    }
+                  >
+                    {message.status === "read" ? (
+                      <FaEnvelopeOpen size={18} />
+                    ) : (
+                      <FaEnvelope size={18} />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMessageToDelete(message._id);
+                      setIsDeleteModalOpen(true);
+                    }}
+                    className="text-gray-600 hover:text-red-600"
+                    title="Archive message"
+                  >
+                    <FaTrash size={18} />
+                  </button>
+                </div>
+              </div>
+              <p className="text-gray-700 whitespace-pre-wrap">
+                {message.message}
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                {new Date(message.createdAt).toLocaleString()}
+              </p>
             </div>
           ))}
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
@@ -87,8 +215,8 @@ export default function MessagesPage() {
           setMessageToDelete(null);
         }}
         onConfirm={handleConfirmDelete}
-        title="Delete Message"
-        message="Are you sure you want to delete this message? This action cannot be undone."
+        title="Archive Message"
+        message="Are you sure you want to archive this message? You can view archived messages in the archive section."
         itemType="message"
       />
     </div>

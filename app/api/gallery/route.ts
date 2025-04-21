@@ -1,41 +1,75 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongodb";
+import { Types } from "mongoose";
 
 const ITEMS_PER_PAGE = 5;
 
 export const dynamic = "force-dynamic";
 
-// GET handler for static builds
+// GET handler for fetching gallery images
 export async function GET() {
-  return NextResponse.json({ message: "Gallery API endpoint" });
-}
-
-// POST handler for fetching gallery images
-export async function POST(request: Request) {
   try {
-    const { category = "all", page = 1 } = await request.json();
-    const { db } = await connectToDatabase();
+    const client = await clientPromise;
+    const db = client.db("hospitality");
     const collection = db.collection("gallery");
 
-    const query = category === "all" ? {} : { category };
-    const limit = 8;
-    const skip = (page - 1) * limit;
+    const images = await collection.find({}).toArray();
 
-    const [images, total] = await Promise.all([
-      collection.find(query).skip(skip).limit(limit).toArray(),
-      collection.countDocuments(query),
-    ]);
-
-    return NextResponse.json({
-      images,
-      hasMore: total > skip + limit,
-      total,
-    });
+    return NextResponse.json({ images });
   } catch (error) {
     console.error("Error fetching gallery images:", error);
     return NextResponse.json(
       { error: "Failed to fetch gallery images" },
+      { status: 500 }
+    );
+  }
+}
+
+// POST handler for creating new gallery items
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const client = await clientPromise;
+    const db = client.db("hospitality");
+    const collection = db.collection("gallery");
+
+    // If category and page are provided, treat it as a fetch request
+    if ("category" in body && "page" in body) {
+      const { category = "all", page = 1 } = body;
+      const query = category === "all" ? {} : { category };
+      const limit = 8;
+      const skip = (page - 1) * limit;
+
+      const [images, total] = await Promise.all([
+        collection.find(query).skip(skip).limit(limit).toArray(),
+        collection.countDocuments(query),
+      ]);
+
+      return NextResponse.json({
+        images,
+        hasMore: total > skip + limit,
+        total,
+      });
+    }
+
+    // Otherwise, treat it as a create request
+    const result = await collection.insertOne({
+      ...body,
+      createdAt: new Date(),
+    });
+
+    if (!result.acknowledged) {
+      throw new Error("Failed to create gallery item");
+    }
+
+    return NextResponse.json({
+      message: "Gallery item created successfully",
+      id: result.insertedId.toString(),
+    });
+  } catch (error) {
+    console.error("Error with gallery operation:", error);
+    return NextResponse.json(
+      { error: "Failed to process gallery operation" },
       { status: 500 }
     );
   }
@@ -47,11 +81,12 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, ...updateData } = body;
 
-    const { db } = await connectToDatabase();
+    const client = await clientPromise;
+    const db = client.db("hospitality");
 
     const result = await db
       .collection("gallery")
-      .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
+      .updateOne({ _id: new Types.ObjectId(id) }, { $set: updateData });
 
     if (result.matchedCount === 0) {
       return NextResponse.json(
@@ -72,13 +107,40 @@ export async function PUT(request: Request) {
 // DELETE handler for removing gallery items
 export async function DELETE(request: Request) {
   try {
-    const body = await request.json();
-    const { id } = body;
+    let id;
 
-    const { db } = await connectToDatabase();
+    // Try to get ID from query parameters first
+    const { searchParams } = new URL(request.url);
+    const queryId = searchParams.get("id");
+
+    if (queryId) {
+      id = queryId;
+    } else {
+      // If not in query params, try to get from request body
+      try {
+        const body = await request.json();
+        id = body.id;
+      } catch (e) {
+        // If both fail, return error
+        return NextResponse.json(
+          { error: "Gallery item ID is required" },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Gallery item ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const client = await clientPromise;
+    const db = client.db("hospitality");
 
     const result = await db.collection("gallery").deleteOne({
-      _id: new ObjectId(id),
+      _id: new Types.ObjectId(id),
     });
 
     if (result.deletedCount === 0) {
@@ -88,8 +150,12 @@ export async function DELETE(request: Request) {
       );
     }
 
-    return NextResponse.json({ message: "Gallery item deleted successfully" });
+    return NextResponse.json({
+      success: true,
+      message: "Gallery item deleted successfully",
+    });
   } catch (error) {
+    console.error("Error deleting gallery item:", error);
     return NextResponse.json(
       { error: "Failed to delete gallery item" },
       { status: 500 }

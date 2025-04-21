@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { Types } from "mongoose";
 
 // GET all businesses
 export async function GET(request: Request) {
@@ -71,7 +71,7 @@ export async function PUT(request: Request) {
     const { id, ...updateData } = data;
 
     const result = await db.collection("businesses").findOneAndUpdate(
-      { _id: new ObjectId(id) },
+      { _id: new Types.ObjectId(id) },
       {
         $set: {
           ...updateData,
@@ -115,7 +115,7 @@ export async function DELETE(request: Request) {
     const db = client.db("hospitality");
 
     const result = await db.collection("businesses").deleteOne({
-      _id: new ObjectId(id),
+      _id: new Types.ObjectId(id),
     });
 
     if (result.deletedCount === 0) {
