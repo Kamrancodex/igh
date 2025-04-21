@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+declare global {
+  var mongoose: MongooseCache | undefined;
+}
+
 const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
@@ -8,10 +17,14 @@ if (!MONGODB_URI) {
   );
 }
 
-let cached = global.mongoose;
+const cached: MongooseCache = global.mongoose || {
+  conn: null,
+  promise: null,
+};
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+// Initialize global mongoose cache
+if (!global.mongoose) {
+  global.mongoose = cached;
 }
 
 async function connectDB() {
