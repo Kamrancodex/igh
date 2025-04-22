@@ -930,8 +930,7 @@ export default function Home() {
       id: 1,
       name: "George Aoun",
       title: "Co-Founder and CEO",
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90byhttps://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      image: "/team-1.jpeg",
       socials: {
         behance: "#",
         twitter: "https://www.linkedin.com/in/georgesaaoun",
