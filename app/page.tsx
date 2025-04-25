@@ -26,6 +26,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import NewsletterSection from "../components/newsletter-section";
 import { Toaster, toast } from "sonner";
+import BusinessCarousel from "./components/BusinessCarousel";
 
 // Custom hook for image loading
 const useImageLoad = (imageUrl: string) => {
@@ -1399,115 +1400,15 @@ export default function Home() {
           className="py-24 bg-white border-t border-gray-100 section-reveal"
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-center mb-24 animate-on-scroll fade-in-up">
-              BUSINESSES WE OWN
-            </h2>
-
             {error && (
               <div className="text-red-500 text-center mb-8">{error}</div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 stagger-children">
-              {loading ? (
-                // Show skeletons while loading
-                Array(4)
-                  .fill(0)
-                  .map((_, index) => (
-                    <BusinessSkeleton key={`skeleton-${index}`} />
-                  ))
-              ) : businesses.length > 0 ? (
-                // Show actual businesses
-                businesses.slice(0, displayCount).map((business, index) => (
-                  <div
-                    key={business._id}
-                    className={`group relative overflow-hidden rounded-xl shadow-2xl transition-all duration-500 hover:shadow-3xl animate-on-scroll fade-in-up delay-${
-                      index * 100
-                    } hover-card tilt-element`}
-                    ref={tiltElementRef}
-                  >
-                    <div className="relative aspect-[16/9] w-full overflow-hidden zoom-on-hover">
-                      <Image
-                        src={business.image || "/placeholder.svg"}
-                        alt={business.name}
-                        width={800}
-                        height={600}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-80"></div>
-                    </div>
-
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <div className="flex flex-col justify-between gap-4">
-                        <div>
-                          <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                            {business.name}
-                          </h3>
-                          <p className="text-sm md:text-base text-white/80 mb-4">
-                            {business.description}
-                          </p>
-
-                          <Link
-                            href={business.link}
-                            className="inline-flex items-center text-white border-b-2 border-white pb-1 transition-all hover:pb-2"
-                          >
-                            Explore{" "}
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-                          </Link>
-                        </div>
-
-                        <div className="flex gap-3">
-                          <Link
-                            href={business.socials.instagram}
-                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                            aria-label={`${business.name} Instagram`}
-                          >
-                            <Instagram className="h-4 w-4 text-white" />
-                          </Link>
-                          <Link
-                            href={business.socials.facebook}
-                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                            aria-label={`${business.name} Facebook`}
-                          >
-                            <Facebook className="h-4 w-4 text-white" />
-                          </Link>
-                          <Link
-                            href={business.socials.twitter}
-                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                            aria-label={`${business.name} Twitter`}
-                          >
-                            <Twitter className="h-4 w-4 text-white" />
-                          </Link>
-                          <Link
-                            href={business.socials.website}
-                            className="bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/20 transition-colors"
-                            aria-label={`${business.name} Website`}
-                          >
-                            <Globe className="h-4 w-4 text-white" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="col-span-2 text-center py-12">
-                  No businesses found
-                </div>
-              )}
-            </div>
-
-            {/* Load More Button */}
-            {hasMore && !loading && (
-              <div className="mt-12 text-center">
-                <button
-                  onClick={loadMore}
-                  className="px-8 py-4 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition-all duration-300 inline-flex items-center group"
-                >
-                  Load More
-                  <ChevronDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
-                </button>
-              </div>
-            )}
+            <BusinessCarousel
+              businesses={businesses}
+              loading={loading}
+              tiltElementRef={tiltElementRef}
+            />
           </div>
         </section>
 
@@ -2229,24 +2130,6 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
-                {/* Map */}
-                <div className="rounded-lg overflow-hidden h-80 relative image-reveal">
-                  <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                    <Image
-                      src="/nyc-street-map.png"
-                      alt="Map location of Icon Group Hospitality"
-                      width={600}
-                      height={400}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-black text-white px-4 py-2 rounded-md">
-                        Interactive Map Loading...
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -2263,10 +2146,12 @@ export default function Home() {
               <div>
                 <div className="mb-8">
                   <div className="flex items-center mb-4">
-                    <span className="text-white text-4xl font-bold text-gradient-animate">
-                      h
-                    </span>
-                    <span className="text-orange-500 ml-1 text-lg">group</span>
+                    <Image
+                      src="/logo.png"
+                      alt="Icon Group Hospitality Logo"
+                      width={100}
+                      height={100}
+                    />
                   </div>
                   <h3 className="text-xl font-bold text-white">
                     ICON GROUP HOSPITALITY
