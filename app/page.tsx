@@ -22,6 +22,7 @@ import {
   GraduationCap,
   ChevronDown,
   Heart,
+  X,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import NewsletterSection from "../components/newsletter-section";
@@ -74,6 +75,20 @@ interface Testimonial {
   image: string;
   quote: string;
   logo: string;
+}
+
+interface TeamMember {
+  id: number;
+  name: string;
+  title: string;
+  image: string;
+  socials: {
+    twitter: string;
+    facebook: string;
+    linkedin: string;
+    behance: string;
+  };
+  description: string;
 }
 
 // Add the testimonials data
@@ -182,6 +197,9 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [activeTeamValue, setActiveTeamValue] = useState<number>(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [selectedTeamMember, setSelectedTeamMember] =
+    useState<TeamMember | null>(null);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   // Find the cursor position state and update logic
   // Replace the cursor implementation with this fixed version:
 
@@ -926,76 +944,49 @@ export default function Home() {
   ];
 
   // Team members data
-  const teamMembers = [
+  const teamMembers: TeamMember[] = [
     {
       id: 1,
-      name: "George Aoun",
-      title: "Co-Founder and CEO",
+      name: "Georges Aoun",
+      title: "CEO & Founder",
       image: "/team-1.jpeg",
       socials: {
-        behance: "#",
-        twitter: "https://www.linkedin.com/in/georgesaaoun",
-        facebook: "#",
+        twitter: "https://twitter.com",
+        facebook: "https://facebook.com",
+        linkedin: "https://linkedin.com",
+        behance: "https://behance.com",
       },
+      description:
+        "George brings over 15 years of experience in luxury hospitality management. His innovative vision and strategic leadership have transformed countless hospitality venues into industry-leading destinations. He specializes in creating unique guest experiences that combine operational excellence with creative design elements.",
     },
     {
       id: 2,
       name: "Anthony Hamilton",
-      title: "Executive Chef",
+      title: "Chef",
       image: "/team-2.png",
       socials: {
-        behance: "#",
-        twitter: "https://www.linkedin.com/in/anthony-hamilton-5805013a/",
-        facebook: "https://www.facebook.com/Restauranttopia/",
+        twitter: "https://twitter.com",
+        facebook: "https://facebook.com",
+        linkedin: "https://linkedin.com",
+        behance: "https://behance.com",
       },
+      description:
+        "Chef Anthony Hamilton is a 2003 graduate of the Culinary Institute of American in Hyde Park, New York, as well a 2010 graduate of Kent State University's Hospitality Management program. Hamilton has more than 20 years of restaurant and hospitality working experience, ranging from quick-service outlets to full-service catering to fine dining. He has held positions in all areas of the restaurant industry with most notably chef de cuisine, executive chef, corporate chef, chef/consultant, and director of operations.",
     },
     {
       id: 3,
-      name: "SARAH JOHNSON",
-      title: "Operations Manager",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      socials: {
-        behance: "#",
-        twitter: "#",
-        facebook: "#",
-      },
-    },
-    {
-      id: 4,
-      name: "DAVID RODRIGUEZ",
-      title: "Finance Director",
-      image:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      socials: {
-        behance: "#",
-        twitter: "#",
-        facebook: "#",
-      },
-    },
-    {
-      id: 5,
-      name: "LORI HARVEY",
-      title: "Project Manager",
+      name: "Sophia Chen",
+      title: "Creative Director",
       image:
         "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
       socials: {
-        behance: "#",
-        twitter: "#",
-        facebook: "#",
+        twitter: "https://twitter.com",
+        facebook: "https://facebook.com",
+        linkedin: "https://linkedin.com",
+        behance: "https://behance.com",
       },
-    },
-    {
-      id: 6,
-      name: "JAMES WILSON",
-      title: "Creative Director",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      socials: {
-        behance: "#",
-        twitter: "#",
-        facebook: "#",
-      },
+      description:
+        "Sophia leads our design and branding initiatives, bringing spaces to life through thoughtful, immersive design. Her background in hospitality architecture and interior design enables her to create environments that are both aesthetically stunning and functionally exceptional. She specializes in developing unique brand identities that resonate with target audiences.",
     },
   ];
 
@@ -1814,73 +1805,227 @@ export default function Home() {
         {/* Team Members Section */}
         <section
           id="team"
-          className="py-24 bg-white border-t border-gray-100 section-reveal"
+          className="py-24 bg-white border-t border-gray-100 section-reveal overflow-hidden"
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-center mb-24 animate-on-scroll fade-in-up">
+            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-center mb-8 animate-on-scroll fade-in-up">
               OUR TEAM
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-children">
-              {teamMembers.slice(0, 3).map((member, index) => (
+            <p className="text-xl text-gray-600 text-center max-w-3xl mx-auto mb-20 animate-on-scroll fade-in-up delay-100">
+              Meet the passionate experts behind our success, dedicated to
+              transforming hospitality experiences.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 stagger-children">
+              {teamMembers.map((member, index) => (
                 <div
                   key={member.id}
-                  className={`team-member-card group relative overflow-hidden animate-on-scroll fade-in-up delay-${
-                    index * 100
-                  } transform transition-all duration-700 hover:-translate-y-6 hover:shadow-2xl rounded-lg`}
+                  className="group relative h-[450px] overflow-hidden rounded-2xl shadow-xl transition-all duration-500 hover:shadow-2xl animate-on-scroll fade-in-up"
+                  style={{
+                    transformStyle: "preserve-3d",
+                    transform: "perspective(1000px)",
+                    transition: "transform 0.5s ease-out",
+                  }}
+                  onMouseMove={(e) => {
+                    if (window.innerWidth > 768) {
+                      const card = e.currentTarget;
+                      const rect = card.getBoundingClientRect();
+                      const x = e.clientX - rect.left;
+                      const y = e.clientY - rect.top;
+                      const centerX = rect.width / 2;
+                      const centerY = rect.height / 2;
+                      const rotateX = (y - centerY) / 15;
+                      const rotateY = (centerX - x) / 15;
+
+                      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform =
+                      "perspective(1000px) rotateX(0) rotateY(0)";
+                  }}
                 >
-                  <div className="aspect-[3/4] relative overflow-hidden rounded-lg">
+                  {/* Background design elements */}
+                  <div className="absolute -bottom-16 -right-16 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all duration-700"></div>
+                  <div className="absolute -top-16 -left-16 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all duration-700"></div>
+
+                  {/* Image container */}
+                  <div className="absolute inset-0 overflow-hidden">
                     <Image
-                      src={member.image || "/placeholder.svg"}
+                      src={member.image}
                       alt={member.name}
-                      width={600}
-                      height={800}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      width={800}
+                      height={1000}
+                      className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
                     />
 
                     {/* Gradient overlay that appears on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </div>
 
-                    {/* Content that slides up on hover */}
-                    <div className="absolute inset-0 flex flex-col justify-end p-8 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                      <p className="text-white/80 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                  {/* Content container - slides up on hover */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-8 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700">
+                    <div className="overflow-hidden mb-2">
+                      <p className="text-orange-400 font-medium transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500 delay-100">
                         {member.title}
                       </p>
-                      <h3 className="text-3xl font-bold text-white mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                    </div>
+
+                    <div className="overflow-hidden mb-4">
+                      <h3 className="text-3xl font-bold text-white transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500 delay-200">
                         {member.name}
                       </h3>
-                      <div className="flex space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-300">
-                        <Link
-                          href={member.socials.behance}
-                          aria-label="Behance"
-                          className="team-social-icon bg-white/20 p-2 rounded-full hover:bg-white/40 transition-colors"
-                        >
-                          <span className="font-bold text-white text-sm">
-                            Be
-                          </span>
-                        </Link>
+                    </div>
+
+                    <div className="overflow-hidden mb-6">
+                      <p className="text-white/80 text-sm line-clamp-3 transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500 delay-300">
+                        {member.description.substring(0, 120)}...
+                      </p>
+                    </div>
+
+                    <div className="flex justify-between items-center transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-400">
+                      {/* Social icons */}
+                      <div className="flex space-x-3">
                         <Link
                           href={member.socials.twitter}
+                          className="bg-white/10 p-2 rounded-full hover:bg-white/30 transition-colors duration-300 transform hover:scale-110"
                           aria-label="Twitter"
-                          className="team-social-icon bg-white/20 p-2 rounded-full hover:bg-white/40 transition-colors"
                         >
                           <Twitter className="h-4 w-4 text-white" />
                         </Link>
                         <Link
-                          href={member.socials.facebook}
-                          aria-label="Facebook"
-                          className="team-social-icon bg-white/20 p-2 rounded-full hover:bg-white/40 transition-colors"
+                          href={member.socials.linkedin}
+                          className="bg-white/10 p-2 rounded-full hover:bg-white/30 transition-colors duration-300 transform hover:scale-110"
+                          aria-label="LinkedIn"
                         >
-                          <Facebook className="h-4 w-4 text-white" />
+                          <Linkedin className="h-4 w-4 text-white" />
                         </Link>
                       </div>
+
+                      {/* Learn More button */}
+                      <button
+                        onClick={() => {
+                          setSelectedTeamMember(member);
+                          setIsTeamModalOpen(true);
+                        }}
+                        className="text-white border-b border-white/50 hover:border-white pb-1 flex items-center space-x-1 group/btn transition-all duration-300 hover:pb-2"
+                      >
+                        <span>Learn more</span>
+                        <ArrowRight className="h-3 w-3 transform group-hover/btn:translate-x-1 transition-transform duration-300" />
+                      </button>
                     </div>
+                  </div>
+
+                  {/* Floating particle effect on hover */}
+                  <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                    {[...Array(5)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={`absolute w-2 h-2 rounded-full bg-white/40 animate-float-${
+                          ["slow", "medium", "fast"][i % 3]
+                        }`}
+                        style={{
+                          top: `${Math.random() * 100}%`,
+                          left: `${Math.random() * 100}%`,
+                          animationDelay: `${i * 0.5}s`,
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </section>
+
+        {/* Team Member Modal */}
+        {isTeamModalOpen && selectedTeamMember && (
+          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 animate-fade-in">
+            <div
+              className="relative bg-white dark:bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl flex flex-col md:flex-row animate-subtle-pop"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setIsTeamModalOpen(false)}
+                className="absolute top-5 right-5 bg-white/10 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors duration-300 z-10"
+                aria-label="Close modal"
+              >
+                <X className="h-5 w-5 text-white md:text-gray-800" />
+              </button>
+
+              {/* Team member image */}
+              <div className="relative h-64 md:h-auto md:w-2/5 overflow-hidden">
+                <Image
+                  src={selectedTeamMember.image}
+                  alt={selectedTeamMember.name}
+                  width={600}
+                  height={800}
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent md:hidden"></div>
+              </div>
+
+              {/* Team member info */}
+              <div className="p-8 md:w-3/5 flex flex-col justify-between overflow-y-auto">
+                <div>
+                  <p className="text-orange-500 font-medium mb-2">
+                    {selectedTeamMember.title}
+                  </p>
+                  <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                    {selectedTeamMember.name}
+                  </h3>
+                  <div className="prose dark:prose-invert mb-8">
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {selectedTeamMember.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Social links */}
+                <div className="flex flex-wrap gap-4 mt-auto pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <Link
+                    href={selectedTeamMember.socials.twitter}
+                    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
+                    aria-label="Twitter"
+                  >
+                    <Twitter className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </Link>
+                  <Link
+                    href={selectedTeamMember.socials.facebook}
+                    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
+                    aria-label="Facebook"
+                  >
+                    <Facebook className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </Link>
+                  <Link
+                    href={selectedTeamMember.socials.linkedin}
+                    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </Link>
+                  <Link
+                    href={selectedTeamMember.socials.behance}
+                    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
+                    aria-label="Behance"
+                  >
+                    <span className="font-bold text-gray-700 dark:text-gray-300 text-sm">
+                      Be
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal backdrop */}
+            <div
+              className="absolute inset-0 -z-10"
+              onClick={() => setIsTeamModalOpen(false)}
+            ></div>
+          </div>
+        )}
 
         {/* Impact Section */}
         <section
