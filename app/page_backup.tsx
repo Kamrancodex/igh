@@ -5,11 +5,18 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Mail,
+  Instagram,
+  Facebook,
+  Twitter,
   Globe,
   ArrowRight,
   ArrowUpRight,
   Linkedin,
+  Youtube,
   ChevronRight,
+  MapPin,
+  Phone,
+  Clock,
   Send,
   Briefcase,
   GraduationCap,
@@ -20,6 +27,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import NewsletterSection from "../components/newsletter-section";
 import { Toaster, toast } from "sonner";
+import BusinessCarousel from "./components/BusinessCarousel";
 
 // Custom hook for image loading
 const useImageLoad = (imageUrl: string) => {
@@ -167,34 +175,6 @@ const testimonials: Testimonial[] = [
   },
 ];
 
-// Team values data
-const teamValues = [
-  {
-    id: 1,
-    title: "Career Growth",
-    description:
-      "Opportunities for advancement in a dynamic industry with clear paths for professional development.",
-    icon: <Briefcase className="h-8 w-8 text-white" />,
-    color: "bg-gradient-to-br from-black to-gray-700",
-  },
-  {
-    id: 2,
-    title: "Continuous Learning",
-    description:
-      "Professional development programs, workshops, and mentorship opportunities to enhance your skills.",
-    icon: <GraduationCap className="h-8 w-8 text-white" />,
-    color: "bg-gradient-to-br from-gray-800 to-gray-600",
-  },
-  {
-    id: 3,
-    title: "Work-Life Balance",
-    description:
-      "Flexible schedules, wellness programs, and a culture that values personal well-being and fulfillment.",
-    icon: <Heart className="h-8 w-8 text-white" />,
-    color: "bg-gradient-to-br from-gray-900 to-gray-700",
-  },
-];
-
 // Replace the existing Home component with this enhanced version that includes micro-interactions
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
@@ -216,13 +196,6 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<string>("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [activeTeamValue, setActiveTeamValue] = useState<number>(0);
-
-  // Ensure activeTeamValue is always within bounds
-  useEffect(() => {
-    if (activeTeamValue >= teamValues.length) {
-      setActiveTeamValue(0);
-    }
-  }, [activeTeamValue]);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [selectedTeamMember, setSelectedTeamMember] =
     useState<TeamMember | null>(null);
@@ -243,8 +216,8 @@ export default function Home() {
   const navLinks = [
     { id: "home", name: "HOME" },
     { id: "about", name: "ABOUT" },
-    { id: "brands", name: "BRANDS" },
-    { id: "book-party", name: "BOOK YOUR PARTY" },
+    { id: "businesses", name: "BUSINESSES" },
+    { id: "gallery", name: "GALLERY" },
     { id: "testimonials", name: "TESTIMONIALS" },
     { id: "team", name: "TEAM" },
     { id: "employment", name: "WORK WITH US" },
@@ -626,60 +599,149 @@ export default function Home() {
   };
 
   // Update the state definitions
-  // const [businesses, setBusinesses] = useState<Business[]>([]); // Not needed - using hardcoded brands
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [displayCount, setDisplayCount] = useState(4);
+  const [galleryDisplayCount, setGalleryDisplayCount] = useState(6);
+  const [galleryLoading, setGalleryLoading] = useState(true);
+  const [galleryHasMore, setGalleryHasMore] = useState(true);
 
-  // Update the fetchBusinesses function - Not needed for hardcoded brands
-  // const fetchBusinesses = async () => {
-  //   try {
-  //     const res = await fetch("/api/businesses");
-  //     if (!res.ok) {
-  //       throw new Error("Failed to fetch businesses");
-  //     }
-  //     const data = await res.json();
-  //     setBusinesses(data);
-  //     setHasMore(data.length > displayCount);
-  //     setError("");
-  //   } catch (err) {
-  //     console.error("Error fetching businesses:", err);
-  //     setError("Failed to load businesses");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  // Update the fetchBusinesses function
+  const fetchBusinesses = async () => {
+    try {
+      const res = await fetch("/api/businesses");
+      if (!res.ok) {
+        throw new Error("Failed to fetch businesses");
+      }
+      const data = await res.json();
+      setBusinesses(data);
+      setHasMore(data.length > displayCount);
+      setError("");
+    } catch (err) {
+      console.error("Error fetching businesses:", err);
+      setError("Failed to load businesses");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // const loadMore = () => {
-  //   setDisplayCount((prev) => {
-  //     const newCount = prev + 4;
-  //     setHasMore(businesses.length > newCount);
-  //     return newCount;
-  //   });
-  // };
+  const loadMore = () => {
+    setDisplayCount((prev) => {
+      const newCount = prev + 4;
+      setHasMore(businesses.length > newCount);
+      return newCount;
+    });
+  };
 
-  // Business Skeleton Component - Not needed for hardcoded brands
-  // const BusinessSkeleton = () => (
-  //   <div className="relative overflow-hidden rounded-xl shadow-2xl animate-pulse">
-  //     <div className="aspect-[16/9] w-full bg-gray-200"></div>
-  //     <div className="absolute bottom-0 left-0 right-0 p-6">
-  //       <div className="flex flex-col justify-between gap-4">
-  //         <div>
-  //           <div className="h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
-  //           <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
-  //           <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-  //         </div>
-  //         <div className="flex gap-3">
-  //           {[1, 2, 3, 4].map((i) => (
-  //             <div key={i} className="h-8 w-8 bg-gray-200 rounded-full"></div>
-  //           ))}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
+  // Business Skeleton Component
+  const BusinessSkeleton = () => (
+    <div className="relative overflow-hidden rounded-xl shadow-2xl animate-pulse">
+      <div className="aspect-[16/9] w-full bg-gray-200"></div>
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="flex flex-col justify-between gap-4">
+          <div>
+            <div className="h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+          </div>
+          <div className="flex gap-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-8 w-8 bg-gray-200 rounded-full"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Update the error handling in fetch functions
+  const fetchGalleryItems = async () => {
+    try {
+      setGalleryLoading(true);
+      const response = await fetch("/api/gallery", {
+        headers: {
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Pre-load first 6 images
+        const images = data.images || [];
+        const firstSixImages = images.slice(0, 6);
+        firstSixImages.forEach((item: GalleryItem) => {
+          const img = document.createElement("img");
+          img.src = item.image;
+          img.loading = "eager";
+        });
+
+        setGalleryItems(images);
+        setGalleryHasMore(images.length > galleryDisplayCount);
+      } else {
+        throw new Error(data.error || "Failed to fetch gallery items");
+      }
+    } catch (error) {
+      console.error("Error fetching gallery items:", error);
+      setError(error instanceof Error ? error.message : "An error occurred");
+    } finally {
+      setGalleryLoading(false);
+    }
+  };
+
+  // Add intersection observer for lazy loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              observer.unobserve(img);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "50px",
+        threshold: 0.1,
+      }
+    );
+
+    // Observe all gallery images
+    document.querySelectorAll(".gallery-image").forEach((img) => {
+      observer.observe(img);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [galleryItems]);
+
+  const loadMoreGallery = () => {
+    setGalleryDisplayCount((prev) => {
+      const newCount = prev + 6;
+      setGalleryHasMore(galleryItems.length > newCount);
+      return newCount;
+    });
+  };
+
+  // Gallery Skeleton Component
+  const GallerySkeleton = () => (
+    <div className="gallery-item gallery-item-medium-center relative overflow-hidden rounded-lg animate-pulse">
+      <div className="w-full h-full bg-gray-200 aspect-[4/3]"></div>
+      <div className="absolute inset-0 flex flex-col justify-end p-8">
+        <div className="h-6 bg-gray-300 rounded w-1/4 mb-3"></div>
+        <div className="h-8 bg-gray-300 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-gray-300 rounded w-full mb-4"></div>
+        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+      </div>
+    </div>
+  );
 
   // Update form submission
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -845,6 +907,42 @@ export default function Home() {
     };
   }, []);
 
+  // Team values data
+  const teamValues = [
+    {
+      id: 1,
+      title: "Career Growth",
+      description:
+        "Opportunities for advancement in a dynamic industry with clear paths for professional development.",
+      icon: <Briefcase className="h-8 w-8 text-white" />,
+      color: "bg-gradient-to-br from-black to-gray-700",
+    },
+    {
+      id: 2,
+      title: "Continuous Learning",
+      description:
+        "Professional development programs, workshops, and mentorship opportunities to enhance your skills.",
+      icon: <GraduationCap className="h-8 w-8 text-white" />,
+      color: "bg-gradient-to-br from-gray-800 to-gray-600",
+    },
+    {
+      id: 3,
+      title: "Global Exposure",
+      description:
+        "Work with international brands and diverse teams across multiple countries and cultures.",
+      icon: <Globe className="h-8 w-8 text-white" />,
+      color: "bg-gradient-to-br from-black to-gray-800",
+    },
+    {
+      id: 4,
+      title: "Work-Life Balance",
+      description:
+        "Flexible schedules, wellness programs, and a culture that values personal well-being and fulfillment.",
+      icon: <Heart className="h-8 w-8 text-white" />,
+      color: "bg-gradient-to-br from-gray-900 to-gray-700",
+    },
+  ];
+
   // Team members data
   const teamMembers: TeamMember[] = [
     {
@@ -996,9 +1094,13 @@ export default function Home() {
   }, []);
 
   // Add back the useEffect hooks after the fetchBusinesses and fetchGalleryItems functions
-  // useEffect(() => {
-  //   fetchBusinesses();
-  // }, [page]); // Not needed for hardcoded brands
+  useEffect(() => {
+    fetchBusinesses();
+  }, [page]);
+
+  useEffect(() => {
+    fetchGalleryItems();
+  }, []);
 
   const generateParticleStyle = (index: number) => {
     // Use deterministic values based on index instead of random
@@ -1213,108 +1315,12 @@ export default function Home() {
 
           {/* Multi-image collage with centered text */}
           <div className="w-full h-[70vh] relative overflow-hidden">
-            {/* Image Grid */}
-            <div className="grid grid-cols-6 grid-rows-2 h-full">
-              {/* Top row */}
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Restaurant interior"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Luxury hotel bar"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Fine dining experience"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Luxury hotel interior"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Hotel spa service"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Restaurant ambiance"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-
-              {/* Bottom row */}
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Restaurant kitchen"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Hotel room service"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Luxury hotel lobby"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Hotel dining area"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Restaurant service"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <div className="relative overflow-hidden group">
-                <Image
-                  src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="Hotel reception"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-            </div>
+            <Image
+              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80"
+              alt="Luxury hotel lobby representing Icon Group Hospitality"
+              fill
+              className="object-cover"
+            />
             {/* Center overlay with dark background and text */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="bg-slate-800/90 backdrop-blur-sm px-12 py-8 rounded-lg text-center max-w-2xl mx-4 transform hover:scale-105 transition-transform duration-300">
@@ -1388,477 +1394,100 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Our Brands Section */}
-        <section id="brands" className="py-24 bg-gray-50 section-reveal">
+        {/* Update Businesses Section */}
+        <section
+          id="businesses"
+          className="py-24 bg-white border-t border-gray-100 section-reveal"
+        >
           <div className="container mx-auto px-6">
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-center mb-16 animate-on-scroll fade-in-up">
-              OUR BRANDS
-            </h2>
+            {error && (
+              <div className="text-red-500 text-center mb-8">{error}</div>
+            )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
-              <div className="group animate-on-scroll fade-in-up text-center">
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Riverside Bistro"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Riverside Bistro
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.1s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Urban Kitchen"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Urban Kitchen
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.2s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Skyline Lounge"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Skyline Lounge
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.3s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Grand Hotel Meridian"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Grand Hotel Meridian
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.4s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Coastal Café"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Coastal Café
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.5s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Metropolitan Suites"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Metropolitan Suites
-                </h3>
-              </div>
-            </div>
+            <BusinessCarousel
+              businesses={businesses}
+              loading={loading}
+              tiltElementRef={tiltElementRef}
+            />
           </div>
         </section>
 
-        {/* Book Your Party Section */}
-        <section id="book-party" className="py-24 bg-gray-50 section-reveal">
+        {/* Gallery Section */}
+        <section
+          id="gallery"
+          className="py-24 bg-white border-t border-gray-100"
+        >
           <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6 animate-on-scroll fade-in-up">
-                PLAN YOUR EVENT WITH US!
+            <div className="max-w-2xl mx-auto text-center mb-16">
+              <h2 className="text-6xl md:text-7xl font-bold tracking-tighter mb-6">
+                OUR GALLERY
               </h2>
-              <p
-                className="text-gray-600 text-lg animate-on-scroll fade-in-up"
-                style={{ animationDelay: "0.1s" }}
-              >
-                Click on a location below or scroll down to browse all venues.
-                For general inquiries, please email{" "}
-                <a
-                  href="mailto:PARTY@ICGARS.COM"
-                  className="text-orange-500 hover:text-orange-600 transition-colors"
-                >
-                  PARTY@ICGARS.COM
-                </a>{" "}
-                OR CALL{" "}
-                <a
-                  href="tel:312-462-3671"
-                  className="text-orange-500 hover:text-orange-600 transition-colors"
-                >
-                  312.462.3671
-                </a>
+              <p className="text-gray-600">
+                Explore our collection of stunning hospitality projects and
+                experiences.
               </p>
             </div>
 
-            <div className="space-y-24">
-              {/* Dummy Venue 1 - Downtown Restaurant - Image Left */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up">
-                <div className="relative overflow-hidden rounded-2xl group">
-                  <Image
-                    src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Downtown Restaurant"
-                    width={600}
-                    height={400}
-                    className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
+            {galleryLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-[4/3] bg-gray-200 rounded-xl animate-pulse"
                   />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Downtown Restaurant
-                    </h3>
-                    <div className="text-gray-600 space-y-1">
-                      <p>123 Main Street</p>
-                      <p>Chicago, IL 60601</p>
-                      <p className="text-orange-500 font-medium">Downtown</p>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {(galleryItems || []).slice(0, 8).map((item, index) => (
+                  <div
+                    key={item._id}
+                    className={`relative group overflow-hidden rounded-xl ${
+                      index === 0 || index === 7
+                        ? "md:col-span-2 md:row-span-2"
+                        : ""
+                    }`}
+                  >
+                    <div
+                      className={`${
+                        index === 0 || index === 7
+                          ? "aspect-square"
+                          : "aspect-[4/3]"
+                      }`}
+                    >
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes={
+                          index === 0 || index === 7
+                            ? "(max-width: 768px) 100vw, 50vw"
+                            : "(max-width: 768px) 50vw, 25vw"
+                        }
+                        priority={index < 4}
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 p-4 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <h3 className="text-white font-semibold text-lg mb-1">
+                          {item.title}
+                        </h3>
+                        <p className="text-white/80 text-sm line-clamp-2">
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <p>
-                      <span className="font-semibold">Phone:</span>{" "}
-                      <a
-                        href="tel:312-555-0001"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        312-555-0001
-                      </a>
-                    </p>
-                    <p>
-                      <span className="font-semibold">Website:</span>{" "}
-                      <a
-                        href="#"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        downtownrestaurant.com
-                      </a>
-                    </p>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    Perfect venue for your special events with elegant dining
-                    spaces, modern amenities, and professional service.
-                    Accommodates groups from 20 to 200 people.
-                  </p>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 20-200 guests
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Private dining rooms
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Full bar service
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Audio/Visual equipment
-                    </li>
-                  </ul>
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
+            )}
 
-              {/* Dummy Venue 2 - Lakeside Bar - Image Right */}
-              <div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up"
-                style={{ animationDelay: "0.1s" }}
-              >
-                <div className="space-y-6 lg:order-1">
-                  <div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Lakeside Bar
-                    </h3>
-                    <div className="text-gray-600 space-y-1">
-                      <p>456 Lake Street</p>
-                      <p>Chicago, IL 60602</p>
-                      <p className="text-orange-500 font-medium">
-                        Lakefront District
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p>
-                      <span className="font-semibold">Phone:</span>{" "}
-                      <a
-                        href="tel:312-555-0002"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        312-555-0002
-                      </a>
-                    </p>
-                    <p>
-                      <span className="font-semibold">Website:</span>{" "}
-                      <a
-                        href="#"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        lakesidebar.com
-                      </a>
-                    </p>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    Casual bar and grill with outdoor patio seating and lake
-                    views. Great for birthday parties, happy hours, and casual
-                    celebrations.
-                  </p>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 50-150 guests
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Outdoor patio
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Sports viewing
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Live music venue
-                    </li>
-                  </ul>
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
-                  </div>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl group lg:order-2">
-                  <Image
-                    src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Lakeside Bar"
-                    width={600}
-                    height={400}
-                    className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-              </div>
-
-              {/* Dummy Venue 3 - Uptown Grill - Image Left */}
-              <div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up"
-                style={{ animationDelay: "0.2s" }}
-              >
-                <div className="relative overflow-hidden rounded-2xl group">
-                  <Image
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Uptown Grill"
-                    width={600}
-                    height={400}
-                    className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Uptown Grill
-                    </h3>
-                    <div className="text-gray-600 space-y-1">
-                      <p>789 North Avenue</p>
-                      <p>Chicago, IL 60603</p>
-                      <p className="text-orange-500 font-medium">Uptown</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p>
-                      <span className="font-semibold">Phone:</span>{" "}
-                      <a
-                        href="tel:312-555-0003"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        312-555-0003
-                      </a>
-                    </p>
-                    <p>
-                      <span className="font-semibold">Website:</span>{" "}
-                      <a
-                        href="#"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        uptowngrill.com
-                      </a>
-                    </p>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    Modern grill restaurant with upscale ambiance and excellent
-                    steaks. Perfect for corporate dinners and special occasions.
-                  </p>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 30-100 guests
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Premium steaks & seafood
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Wine cellar
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Corporate events
-                    </li>
-                  </ul>
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dummy Venue 4 - Westside Lounge - Image Right */}
-              <div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up"
-                style={{ animationDelay: "0.3s" }}
-              >
-                <div className="space-y-6 lg:order-1">
-                  <div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Westside Lounge
-                    </h3>
-                    <div className="text-gray-600 space-y-1">
-                      <p>321 West Side Drive</p>
-                      <p>Chicago, IL 60604</p>
-                      <p className="text-orange-500 font-medium">West Side</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p>
-                      <span className="font-semibold">Phone:</span>{" "}
-                      <a
-                        href="tel:312-555-0004"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        312-555-0004
-                      </a>
-                    </p>
-                    <p>
-                      <span className="font-semibold">Website:</span>{" "}
-                      <a
-                        href="#"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        westsidelounge.com
-                      </a>
-                    </p>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    Trendy lounge with craft cocktails and small plates. Ideal
-                    for cocktail parties and networking events.
-                  </p>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 40-120 guests
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Craft cocktails
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Modern atmosphere
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      DJ & music
-                    </li>
-                  </ul>
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
-                  </div>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl group lg:order-2">
-                  <Image
-                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Westside Lounge"
-                    width={600}
-                    height={400}
-                    className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* View More Button */}
-            <div className="text-center mt-16">
+            <div className="text-center mt-12">
               <Link
-                href="/book-party"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-all duration-300 group"
+                href="/gallery"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition-all duration-300 group"
               >
-                View More Venues
+                View Full Gallery
                 <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -2043,9 +1672,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contact Section */}
+        {/* Employment Section */}
         <section
-          id="contact"
+          id="employment"
           className="py-24 bg-white overflow-hidden border-t border-gray-100 section-reveal subtle-bg-animation relative"
         >
           {/* Background design elements */}
@@ -2080,7 +1709,7 @@ export default function Home() {
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-6xl md:text-7xl font-bold tracking-tighter mb-16 animate-on-scroll fade-in-up">
-                CONTACT
+                WORK WITH US
               </h2>
 
               {/* Why Join Our Team - Interactive Section */}
@@ -2090,7 +1719,7 @@ export default function Home() {
                 </h3>
 
                 {/* Interactive value cards */}
-                <div className="grid grid-cols-3 gap-2 mb-8 stagger-children">
+                <div className="grid grid-cols-4 gap-2 mb-8 stagger-children">
                   {teamValues.map((value, index) => (
                     <button
                       key={value.id}
@@ -2107,25 +1736,23 @@ export default function Home() {
                 </div>
 
                 {/* Active value content */}
-                {teamValues[activeTeamValue] && (
-                  <div
-                    className={`p-8 rounded-lg mb-12 transition-all duration-500 ${teamValues[activeTeamValue].color}`}
-                  >
-                    <div className="flex flex-col md:flex-row items-center gap-6">
-                      <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 float-element">
-                        {teamValues[activeTeamValue].icon}
-                      </div>
-                      <div className="text-left">
-                        <h4 className="text-2xl font-bold text-white mb-3">
-                          {teamValues[activeTeamValue].title}
-                        </h4>
-                        <p className="text-white/90 text-lg">
-                          {teamValues[activeTeamValue].description}
-                        </p>
-                      </div>
+                <div
+                  className={`p-8 rounded-lg mb-12 transition-all duration-500 ${teamValues[activeTeamValue].color}`}
+                >
+                  <div className="flex flex-col md:flex-row items-center gap-6">
+                    <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 float-element">
+                      {teamValues[activeTeamValue].icon}
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-2xl font-bold text-white mb-3">
+                        {teamValues[activeTeamValue].title}
+                      </h4>
+                      <p className="text-white/90 text-lg">
+                        {teamValues[activeTeamValue].description}
+                      </p>
                     </div>
                   </div>
-                )}
+                </div>
 
                 {/* 2. Update the JOIN OUR TEAM button to redirect to contact section */}
                 <button
@@ -2140,15 +1767,43 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* 3. Replace the "Connect with us" section with just LinkedIn icon */}
+              {/* 3. Replace the "Connect with us" section with just larger social icons */}
               <div className="social-icons-container mt-16 animate-on-scroll fade-in-up delay-600">
-                <div className="flex justify-center">
+                <div className="flex justify-center space-x-6">
+                  <Link
+                    href="#"
+                    className="employment-social-icon"
+                    aria-label="Instagram"
+                  >
+                    <Instagram className="h-8 w-8" />
+                  </Link>
+                  <Link
+                    href="#"
+                    className="employment-social-icon"
+                    aria-label="Facebook"
+                  >
+                    <Facebook className="h-8 w-8" />
+                  </Link>
+                  <Link
+                    href="#"
+                    className="employment-social-icon"
+                    aria-label="Twitter"
+                  >
+                    <Twitter className="h-8 w-8" />
+                  </Link>
                   <Link
                     href="#"
                     className="employment-social-icon"
                     aria-label="LinkedIn"
                   >
                     <Linkedin className="h-8 w-8" />
+                  </Link>
+                  <Link
+                    href="#"
+                    className="employment-social-icon"
+                    aria-label="YouTube"
+                  >
+                    <Youtube className="h-8 w-8" />
                   </Link>
                 </div>
               </div>
@@ -2242,6 +1897,13 @@ export default function Home() {
                       {/* Social icons */}
                       <div className="flex space-x-3">
                         <Link
+                          href={member.socials.twitter}
+                          className="bg-white/10 p-2 rounded-full hover:bg-white/30 transition-colors duration-300 transform hover:scale-110"
+                          aria-label="Twitter"
+                        >
+                          <Twitter className="h-4 w-4 text-white" />
+                        </Link>
+                        <Link
                           href={member.socials.linkedin}
                           className="bg-white/10 p-2 rounded-full hover:bg-white/30 transition-colors duration-300 transform hover:scale-110"
                           aria-label="LinkedIn"
@@ -2273,8 +1935,8 @@ export default function Home() {
                           ["slow", "medium", "fast"][i % 3]
                         }`}
                         style={{
-                          top: `${((i * 23) % 100).toFixed(2)}%`,
-                          left: `${((i * 17) % 100).toFixed(2)}%`,
+                          top: `${Math.random() * 100}%`,
+                          left: `${Math.random() * 100}%`,
                           animationDelay: `${i * 0.5}s`,
                         }}
                       />
@@ -2333,11 +1995,34 @@ export default function Home() {
                 {/* Social links */}
                 <div className="flex flex-wrap gap-4 mt-auto pt-6 border-t border-gray-200 dark:border-gray-700">
                   <Link
+                    href={selectedTeamMember.socials.twitter}
+                    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
+                    aria-label="Twitter"
+                  >
+                    <Twitter className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </Link>
+                  <Link
+                    href={selectedTeamMember.socials.facebook}
+                    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
+                    aria-label="Facebook"
+                  >
+                    <Facebook className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </Link>
+                  <Link
                     href={selectedTeamMember.socials.linkedin}
                     className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
                     aria-label="LinkedIn"
                   >
                     <Linkedin className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                  </Link>
+                  <Link
+                    href={selectedTeamMember.socials.behance}
+                    className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 p-3 rounded-full transition-colors duration-300"
+                    aria-label="Behance"
+                  >
+                    <span className="font-bold text-gray-700 dark:text-gray-300 text-sm">
+                      Be
+                    </span>
                   </Link>
                 </div>
               </div>
@@ -2415,10 +2100,10 @@ export default function Home() {
               GET IN TOUCH
             </h2>
 
-            <div className="flex justify-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
               {/* Contact Form */}
-              <div className="w-full max-w-2xl animate-on-scroll fade-in-up">
-                <h3 className="text-2xl font-bold mb-6 text-center">Send us a message</h3>
+              <div className="animate-on-scroll fade-in-up">
+                <h3 className="text-2xl font-bold mb-6">Send us a message</h3>
                 <form onSubmit={handleFormSubmit} className="space-y-6">
                   <div className="form-input-animation">
                     <label
@@ -2535,12 +2220,77 @@ export default function Home() {
                   </div>
                 </form>
               </div>
+
+              {/* Contact Information and Map */}
+              <div className="animate-on-scroll fade-in-up delay-200">
+                <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+
+                <div className="space-y-8 mb-12 stagger-children">
+                  <div className="flex items-start">
+                    <div className="bg-gray-100 p-3 rounded-full mr-4">
+                      <MapPin className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">Address</h4>
+                      <p className="text-gray-600">
+                        123 Fifth Avenue
+                        <br />
+                        New York, NY 10010
+                        <br />
+                        United States
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start">
+                    <div className="bg-gray-100 p-3 rounded-full mr-4">
+                      <Mail className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">Email</h4>
+                      <p className="text-gray-600">
+                        info@icongrouphospitality.com
+                      </p>
+                      <p className="text-gray-600">
+                        careers@icongrouphospitality.com
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start">
+                    <div className="bg-gray-100 p-3 rounded-full mr-4">
+                      <Phone className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">Phone</h4>
+                      <p className="text-gray-600">+1 (212) 555-0123</p>
+                      <p className="text-gray-600">+1 (212) 555-0124</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start">
+                    <div className="bg-gray-100 p-3 rounded-full mr-4">
+                      <Clock className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">Business Hours</h4>
+                      <p className="text-gray-600">
+                        Monday - Friday: 9:00 AM - 6:00 PM
+                      </p>
+                      <p className="text-gray-600">
+                        Saturday: 10:00 AM - 4:00 PM
+                      </p>
+                      <p className="text-gray-600">Sunday: Closed</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Newsletter Section - Commented out for future re-enabling */}
-        {/* <NewsletterSection createRipple={createRipple} /> */}
+        {/* Newsletter Section */}
+        <NewsletterSection createRipple={createRipple} />
 
         {/* Footer */}
         <footer className="bg-[#111827] text-white pt-32 pb-10">
@@ -2562,11 +2312,31 @@ export default function Home() {
                   </h3>
                 </div>
                 <p className="text-gray-400 mb-8 leading-relaxed">
-                  At Icon Group Hospitality, we breathe new life into beloved
-                  establishments—honoring their legacy while reimagining their
-                  future.
+                  Elevating the standard of luxury hospitality through
+                  innovative management and consulting services.
                 </p>
                 <div className="flex space-x-4">
+                  <a
+                    href="#"
+                    className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
+                    aria-label="Instagram"
+                  >
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="#"
+                    className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
+                    aria-label="Facebook"
+                  >
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="#"
+                    className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
+                    aria-label="Twitter"
+                  >
+                    <Twitter className="h-5 w-5" />
+                  </a>
                   <a
                     href="#"
                     className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
@@ -2603,20 +2373,20 @@ export default function Home() {
                   </li>
                   <li>
                     <a
-                      href="#brands"
+                      href="#businesses"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      Brands
+                      Businesses
                     </a>
                   </li>
                   <li>
                     <a
-                      href="#book-party"
+                      href="#gallery"
                       className="text-gray-400 hover:text-orange-500 transition-colors flex items-center group"
                     >
                       <ChevronRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      Book Your Party
+                      Gallery
                     </a>
                   </li>
                   <li>
@@ -2646,10 +2416,30 @@ export default function Home() {
                   CONTACT INFO
                 </h3>
                 <ul className="space-y-4">
+                  <li className="flex items-start">
+                    <MapPin className="h-5 w-5 text-orange-500 mt-1 mr-3 flex-shrink-0" />
+                    <span className="text-gray-400">
+                      123 Fifth Avenue
+                      <br />
+                      New York, NY 10010
+                      <br />
+                      United States
+                    </span>
+                  </li>
                   <li className="flex items-center">
                     <Mail className="h-5 w-5 text-orange-500 mr-3 flex-shrink-0" />
                     <span className="text-gray-400">
                       info@icongrouphospitality.com
+                    </span>
+                  </li>
+                  <li className="flex items-center">
+                    <Phone className="h-5 w-5 text-orange-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-400">+1 (212) 555-0123</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Clock className="h-5 w-5 text-orange-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-400">
+                      Mon-Fri: 9:00 AM - 6:00 PM
                     </span>
                   </li>
                 </ul>

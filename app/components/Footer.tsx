@@ -31,28 +31,11 @@ export default function Footer() {
               </h3>
             </div>
             <p className="text-gray-400 mb-8 leading-relaxed">
-              Elevating the standard of luxury hospitality through innovative
-              management and consulting services.
+              At Icon Group Hospitality, we breathe new life into beloved
+              establishments—honoring their legacy while reimagining their
+              future.
             </p>
             <div className="flex space-x-4">
-              <a
-                href="#"
-                className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
               <a
                 href="#"
                 className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
@@ -101,30 +84,10 @@ export default function Footer() {
               CONTACT INFO
             </h3>
             <ul className="space-y-4">
-              <li className="flex items-start">
-                <MapPin className="h-5 w-5 text-orange-500 mt-1 mr-3 flex-shrink-0" />
-                <span className="text-gray-400">
-                  123 Fifth Avenue
-                  <br />
-                  New York, NY 10010
-                  <br />
-                  United States
-                </span>
-              </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-orange-500 mr-3 flex-shrink-0" />
                 <span className="text-gray-400">
                   info@icongrouphospitality.com
-                </span>
-              </li>
-              <li className="flex items-center">
-                <Phone className="h-5 w-5 text-orange-500 mr-3 flex-shrink-0" />
-                <span className="text-gray-400">+1 (212) 555-0123</span>
-              </li>
-              <li className="flex items-center">
-                <Clock className="h-5 w-5 text-orange-500 mr-3 flex-shrink-0" />
-                <span className="text-gray-400">
-                  Mon-Fri: 9:00 AM - 6:00 PM
                 </span>
               </li>
             </ul>
