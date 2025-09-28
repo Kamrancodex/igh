@@ -17,15 +17,25 @@ export default function Login() {
     const password = formData.get("password") as string;
 
     try {
-      if (username === "admin" && password === "admin123") {
-        const token = Math.random().toString(36).substring(2);
-        localStorage.setItem("token", token);
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        localStorage.setItem("token", data.token);
         toast.success("Logged in successfully");
         router.replace("/dashboard");
       } else {
-        toast.error("Invalid credentials");
+        toast.error(data.error || "Invalid credentials");
       }
     } catch (error) {
+      console.error("Login error:", error);
       toast.error("An error occurred during login");
     } finally {
       setIsLoading(false);
