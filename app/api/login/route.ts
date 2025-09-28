@@ -8,6 +8,16 @@ export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
 
+    // Debug logging (remove in production)
+    console.log("Login attempt:", {
+      receivedUsername: username,
+      expectedUsername: ADMIN_USER,
+      hasPassword: !!password,
+      hasExpectedPassword: !!ADMIN_PASS,
+      usernameMatch: username === ADMIN_USER,
+      passwordMatch: password === ADMIN_PASS
+    });
+
     if (username !== ADMIN_USER || password !== ADMIN_PASS) {
       return NextResponse.json(
         { error: "Invalid credentials" },
