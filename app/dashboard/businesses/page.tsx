@@ -142,7 +142,7 @@ export default function BrandsPage() {
       return;
     }
 
-    setBusinessToDelete(id);
+    setBrandToDelete(id);
     setIsDeleteModalOpen(true);
   };
 
