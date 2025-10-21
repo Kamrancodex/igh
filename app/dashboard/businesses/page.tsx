@@ -167,31 +167,31 @@ export default function BrandsPage() {
     });
 
     toast.promise(promise, {
-      loading: "Deleting business...",
-      success: "Business deleted successfully!",
-      error: (err) => err.message || "Failed to delete business",
+      loading: "Deleting brand...",
+      success: "Brand deleted successfully!",
+      error: (err) => err.message || "Failed to delete brand",
     });
   };
 
-  const handleEdit = (business: Business) => {
-    setEditingBusiness(business);
+  const handleEdit = (brand: Brand) => {
+    setEditingBrand(brand);
     setFormData({
-      name: business.name,
-      image: business.image,
-      description: business.description,
-      link: business.link,
+      name: brand.name,
+      image: brand.image,
+      description: brand.description,
+      link: brand.link,
       socials: {
-        instagram: business.socials?.instagram || "",
-        facebook: business.socials?.facebook || "",
-        twitter: business.socials?.twitter || "",
-        website: business.socials?.website || "",
+        instagram: brand.socials?.instagram || "",
+        facebook: brand.socials?.facebook || "",
+        twitter: brand.socials?.twitter || "",
+        website: brand.socials?.website || "",
       },
     });
     setIsModalOpen(true);
   };
 
   const resetForm = () => {
-    setEditingBusiness(null);
+    setEditingBrand(null);
     setFormData({
       name: "",
       image: "",
@@ -229,13 +229,13 @@ export default function BrandsPage() {
           }}
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
         >
-          Add Business
+          Add Brand
         </button>
       </div>
 
-      {businesses.length === 0 ? (
+      {brands.length === 0 ? (
         <div className="text-center text-gray-500 mt-8">
-          No businesses found. Add your first business!
+          No brands found. Add your first brand!
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -245,7 +245,7 @@ export default function BrandsPage() {
               className="bg-white rounded-lg shadow-md overflow-hidden"
             >
               <img
-                src={business.image}
+                src={brand.image}
                 alt={brand.name}
                 className="w-full h-48 object-cover"
               />
@@ -253,9 +253,9 @@ export default function BrandsPage() {
                 <h2 className="text-xl font-semibold mb-2">{brand.name}</h2>
                 <p className="text-gray-600 mb-4">{brand.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {business.socials?.website && (
+                  {brand.socials?.website && (
                     <a
-                      href={business.socials.website}
+                      href={brand.socials.website}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
@@ -263,9 +263,9 @@ export default function BrandsPage() {
                       Website
                     </a>
                   )}
-                  {business.socials?.instagram && (
+                  {brand.socials?.instagram && (
                     <a
-                      href={business.socials.instagram}
+                      href={brand.socials.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-pink-600 hover:underline"
@@ -273,9 +273,9 @@ export default function BrandsPage() {
                       Instagram
                     </a>
                   )}
-                  {business.socials?.facebook && (
+                  {brand.socials?.facebook && (
                     <a
-                      href={business.socials.facebook}
+                      href={brand.socials.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-800 hover:underline"
@@ -283,9 +283,9 @@ export default function BrandsPage() {
                       Facebook
                     </a>
                   )}
-                  {business.socials?.twitter && (
+                  {brand.socials?.twitter && (
                     <a
-                      href={business.socials.twitter}
+                      href={brand.socials.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline"
@@ -296,13 +296,13 @@ export default function BrandsPage() {
                 </div>
                 <div className="flex justify-end space-x-2">
                   <button
-                    onClick={() => handleEdit(business)}
+                    onClick={() => handleEdit(brand)}
                     className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                   >
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(business._id)}
+                    onClick={() => handleDelete(brand._id)}
                     className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700"
                   >
                     Delete
@@ -319,7 +319,7 @@ export default function BrandsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg">
             <h2 className="text-xl font-semibold mb-4">
-              {editingBrand ? "Edit Business" : "Add Business"}
+              {editingBrand ? "Edit Brand" : "Add Brand"}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -502,12 +502,12 @@ export default function BrandsPage() {
         isOpen={isDeleteModalOpen}
         onClose={() => {
           setIsDeleteModalOpen(false);
-          setBusinessToDelete(null);
+          setBrandToDelete(null);
         }}
         onConfirm={handleConfirmDelete}
-        title="Delete Business"
-        message="Are you sure you want to delete this business? This action cannot be undone."
-        itemType="business"
+        title="Delete Brand"
+        message="Are you sure you want to delete this brand? This action cannot be undone."
+        itemType="brand"
       />
     </div>
   );

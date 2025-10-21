@@ -897,27 +897,21 @@ export default function Home() {
   const impactStats = [
     {
       id: 1,
-      number: "150+",
-      label: "HOSPITALITY PROJECTS",
-      description: "Successfully completed across 12 countries",
+      number: "30+",
+      label: "PARTNERSHIPS",
+      description: "Partnerships with local nonprofits",
     },
     {
       id: 2,
-      number: "45%",
-      label: "REVENUE INCREASE",
-      description: "Average growth for our managed properties",
+      number: "$100K+",
+      label: "DONATED",
+      description: "Donated back to our communities",
     },
     {
       id: 3,
-      number: "28",
-      label: "INDUSTRY AWARDS",
-      description: "Recognizing our excellence in hospitality",
-    },
-    {
-      id: 4,
-      number: "12K+",
+      number: "600+",
       label: "STAFF TRAINED",
-      description: "Through our specialized hospitality programs",
+      description: "Staff trained to have amazing hospitality - the Icon way",
     },
   ];
 
@@ -930,8 +924,12 @@ export default function Home() {
         const target = counter.getAttribute("data-target") || "0";
         let targetNum = 0;
 
-        // Handle numbers with + sign or K+ format
-        if (target.includes("+")) {
+        // Handle numbers with + sign, K+ format, and $K+ format
+        if (target.includes("$") && target.includes("K")) {
+          targetNum = Number.parseInt(
+            target.replace(/\$/g, "").replace(/K/g, "").replace(/\+/g, "")
+          );
+        } else if (target.includes("+")) {
           targetNum = Number.parseInt(
             target.replace(/\+/g, "").replace(/K/g, "000")
           );
@@ -950,7 +948,7 @@ export default function Home() {
         const totalFrames = Math.round(duration / frameDuration);
         let frame = 0;
 
-        // Get suffix (like +, K+, %, etc.)
+        // Get suffix (like +, K+, %, $K+, etc.)
         const suffix = target.replace(/[0-9]/g, "");
 
         const animate = () => {
@@ -959,7 +957,12 @@ export default function Home() {
           const currentCount = Math.round(targetNum * progress);
 
           if (counter.textContent !== target) {
+            // Special handling for $K+ format
+            if (target.includes("$") && target.includes("K")) {
+              counter.textContent = "$" + currentCount + "K+";
+            } else {
             counter.textContent = currentCount + suffix;
+            }
           }
 
           if (frame < totalFrames) {
@@ -1422,12 +1425,12 @@ export default function Home() {
             </div>
 
             <div className="space-y-24">
-              {/* Dummy Venue 1 - Downtown Restaurant - Image Left */}
+              {/* RedSpace - Image Left */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up">
                 <div className="relative overflow-hidden rounded-2xl group">
                   <Image
-                    src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Downtown Restaurant"
+                    src="https://utfs.io/f/RIdJxHTnDaRpRjOB1sTnDaRptdNiIoA7sLBXfzh0S3K9PeWg"
+                    alt="RedSpace Events"
                     width={600}
                     height={400}
                     className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
@@ -1437,83 +1440,13 @@ export default function Home() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Downtown Restaurant
+                      RedSpace
                     </h3>
                     <div className="text-gray-600 space-y-1">
-                      <p>123 Main Street</p>
-                      <p>Chicago, IL 60601</p>
-                      <p className="text-orange-500 font-medium">Downtown</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p>
-                      <span className="font-semibold">Phone:</span>{" "}
-                      <a
-                        href="tel:312-555-0001"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        312-555-0001
-                      </a>
-                    </p>
-                    <p>
-                      <span className="font-semibold">Website:</span>{" "}
-                      <a
-                        href="#"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        downtownrestaurant.com
-                      </a>
-                    </p>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    Perfect venue for your special events with elegant dining
-                    spaces, modern amenities, and professional service.
-                    Accommodates groups from 20 to 200 people.
-                  </p>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 20-200 guests
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Private dining rooms
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Full bar service
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Audio/Visual equipment
-                    </li>
-                  </ul>
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dummy Venue 2 - Lakeside Bar - Image Right */}
-              <div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up"
-                style={{ animationDelay: "0.1s" }}
-              >
-                <div className="space-y-6 lg:order-1">
-                  <div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Lakeside Bar
-                    </h3>
-                    <div className="text-gray-600 space-y-1">
-                      <p>456 Lake Street</p>
-                      <p>Chicago, IL 60602</p>
+                      <p>2400 Superior Ave. E.</p>
+                      <p>Cleveland, OH 44114</p>
                       <p className="text-orange-500 font-medium">
-                        Lakefront District
+                        Downtown Cleveland
                       </p>
                     </div>
                   </div>
@@ -1521,58 +1454,153 @@ export default function Home() {
                     <p>
                       <span className="font-semibold">Phone:</span>{" "}
                       <a
-                        href="tel:312-555-0002"
+                        href="tel:216-566-5400"
                         className="text-orange-500 hover:text-orange-600 transition-colors"
                       >
-                        312-555-0002
+                        216-566-5400
                       </a>
                     </p>
                     <p>
                       <span className="font-semibold">Website:</span>{" "}
                       <a
-                        href="#"
+                        href="https://redspaceevents.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-orange-500 hover:text-orange-600 transition-colors"
                       >
-                        lakesidebar.com
+                        redspaceevents.com
                       </a>
                     </p>
                   </div>
                   <p className="text-gray-700 leading-relaxed">
-                    Casual bar and grill with outdoor patio seating and lake
-                    views. Great for birthday parties, happy hours, and casual
-                    celebrations.
+                    A vibrant contemporary venue featuring modern design
+                    elements and flexible event spaces. Standing at the
+                    crossroads of Cleveland's epic downtown renaissance,
+                    RedSpace is the most sought after raw event space and
+                    gallery in the region.
                   </p>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 50-150 guests
+                      Capacity: 200 guests (Space 1) / 500 guests (Space 2)
                     </li>
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Outdoor patio
+                      Industrial chic design
                     </li>
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Sports viewing
+                      Raw event space & gallery
                     </li>
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Live music venue
+                      Flexible blank canvas venue
                     </li>
                   </ul>
                   <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
+                    <a
+                      href="https://redspaceevents.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors"
+                    >
+                      Visit Website
+                    </a>
+                    <a
+                      href="https://www.instagram.com/redspaceevents/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors"
+                    >
+                      Instagram
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tenk West Bank - Image Right */}
+              <div
+                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up"
+                style={{ animationDelay: "0.1s" }}
+              >
+                <div className="space-y-6 lg:order-1">
+                  <div>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                      Tenk West Bank
+                    </h3>
+                    <div className="text-gray-600 space-y-1">
+                      <p>2111 Center St</p>
+                      <p>Cleveland, OH 44113</p>
+                      <p className="text-orange-500 font-medium">The Flats</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p>
+                      <span className="font-semibold">Phone:</span>{" "}
+                      <a
+                        href="tel:216-566-5400"
+                        className="text-orange-500 hover:text-orange-600 transition-colors"
+                      >
+                        216-566-5400
+                      </a>
+                    </p>
+                    <p>
+                      <span className="font-semibold">Website:</span>{" "}
+                      <a
+                        href="https://tenkvenue.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-orange-500 hover:text-orange-600 transition-colors"
+                      >
+                        tenkvenue.com
+                      </a>
+                    </p>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed">
+                    A versatile industrial venue with modern amenities, perfect
+                    for contemporary celebrations. Once a bustling machine shop,
+                    TENK is now a striking example of industrial elegance with
+                    sweeping views of the Cuyahoga River and downtown skyline.
+                  </p>
+                  <ul className="space-y-2 text-gray-700">
+                    <li className="flex items-center">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+                      Capacity: 400 guests
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+                      Industrial elegance design
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+                      River & skyline views
+                    </li>
+                    <li className="flex items-center">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+                      Versatile raw space
+                    </li>
+                  </ul>
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    <a
+                      href="https://tenkvenue.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors"
+                    >
+                      Visit Website
+                    </a>
+                    <a
+                      href="mailto:Inquiries@marigoldcatering.com"
+                      className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors"
+                    >
+                      Contact
+                    </a>
                   </div>
                 </div>
                 <div className="relative overflow-hidden rounded-2xl group lg:order-2">
                   <Image
-                    src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Lakeside Bar"
+                    src="/tenk_west_bank.avif"
+                    alt="Tenk West Bank"
                     width={600}
                     height={400}
                     className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
@@ -1581,15 +1609,15 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Dummy Venue 3 - Uptown Grill - Image Left */}
+              {/* Bellavie - Image Left */}
               <div
                 className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up"
                 style={{ animationDelay: "0.2s" }}
               >
                 <div className="relative overflow-hidden rounded-2xl group">
                   <Image
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Uptown Grill"
+                    src="https://utfs.io/f/RIdJxHTnDaRpcPhFRgDUsoWrxjN5COeKSkTlXf03Fgd9yphE"
+                    alt="Bellavie"
                     width={600}
                     height={400}
                     className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
@@ -1599,143 +1627,70 @@ export default function Home() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Uptown Grill
+                      Bellavie
                     </h3>
                     <div className="text-gray-600 space-y-1">
-                      <p>789 North Avenue</p>
-                      <p>Chicago, IL 60603</p>
-                      <p className="text-orange-500 font-medium">Uptown</p>
+                      <p>Cleveland, OH</p>
+                      <p className="text-orange-500 font-medium">
+                        Premier Event Space
+                      </p>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <p>
-                      <span className="font-semibold">Phone:</span>{" "}
-                      <a
-                        href="tel:312-555-0003"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        312-555-0003
-                      </a>
-                    </p>
-                    <p>
                       <span className="font-semibold">Website:</span>{" "}
                       <a
-                        href="#"
+                        href="https://bellaviecle.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-orange-500 hover:text-orange-600 transition-colors"
                       >
-                        uptowngrill.com
+                        bellaviecle.com
                       </a>
                     </p>
                   </div>
                   <p className="text-gray-700 leading-relaxed">
-                    Modern grill restaurant with upscale ambiance and excellent
-                    steaks. Perfect for corporate dinners and special occasions.
+                    Experience Bellavie's premier event spaces available for
+                    your special celebration. From intimate gatherings to grand
+                    celebrations, discover the perfect venue for your event with
+                    elegant dining and entertainment facilities.
                   </p>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 30-100 guests
+                      Capacity: 200-399 guests
                     </li>
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Premium steaks & seafood
+                      Premier event spaces
                     </li>
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Wine cellar
+                      Elegant dining facilities
                     </li>
                     <li className="flex items-center">
                       <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Corporate events
+                      Special celebrations
                     </li>
                   </ul>
                   <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
+                    <a
+                      href="https://bellaviecle.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors"
+                    >
+                      Visit Website
+                    </a>
+                    <a
+                      href="https://www.instagram.com/bellaviebymarigold/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors"
+                    >
+                      Instagram
+                    </a>
                   </div>
-                </div>
-              </div>
-
-              {/* Dummy Venue 4 - Westside Lounge - Image Right */}
-              <div
-                className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll fade-in-up"
-                style={{ animationDelay: "0.3s" }}
-              >
-                <div className="space-y-6 lg:order-1">
-                  <div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-2">
-                      Westside Lounge
-                    </h3>
-                    <div className="text-gray-600 space-y-1">
-                      <p>321 West Side Drive</p>
-                      <p>Chicago, IL 60604</p>
-                      <p className="text-orange-500 font-medium">West Side</p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p>
-                      <span className="font-semibold">Phone:</span>{" "}
-                      <a
-                        href="tel:312-555-0004"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        312-555-0004
-                      </a>
-                    </p>
-                    <p>
-                      <span className="font-semibold">Website:</span>{" "}
-                      <a
-                        href="#"
-                        className="text-orange-500 hover:text-orange-600 transition-colors"
-                      >
-                        westsidelounge.com
-                      </a>
-                    </p>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    Trendy lounge with craft cocktails and small plates. Ideal
-                    for cocktail parties and networking events.
-                  </p>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Capacity: 40-120 guests
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Craft cocktails
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      Modern atmosphere
-                    </li>
-                    <li className="flex items-center">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
-                      DJ & music
-                    </li>
-                  </ul>
-                  <div className="flex flex-wrap gap-4 pt-4">
-                    <button className="px-6 py-3 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-colors">
-                      Book Now
-                    </button>
-                    <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-full font-medium hover:border-orange-500 hover:text-orange-500 transition-colors">
-                      View Menu
-                    </button>
-                  </div>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl group lg:order-2">
-                  <Image
-                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Westside Lounge"
-                    width={600}
-                    height={400}
-                    className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </div>
             </div>
@@ -2257,7 +2212,7 @@ export default function Home() {
               OUR IMPACT
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 stagger-children">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 stagger-children max-w-5xl mx-auto">
               {impactStats.map((stat, index) => (
                 <div
                   key={stat.id}
