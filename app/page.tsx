@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import BrandsSection from "./components/BrandsSection";
 import NewsletterSection from "../components/newsletter-section";
 import { Toaster, toast } from "sonner";
 
@@ -1389,120 +1390,7 @@ export default function Home() {
         </section>
 
         {/* Our Brands Section */}
-        <section id="brands" className="py-24 bg-gray-50 section-reveal">
-          <div className="container mx-auto px-6">
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-center mb-16 animate-on-scroll fade-in-up">
-              OUR BRANDS
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
-              <div className="group animate-on-scroll fade-in-up text-center">
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Riverside Bistro"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Riverside Bistro
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.1s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Urban Kitchen"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Urban Kitchen
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.2s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Skyline Lounge"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Skyline Lounge
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.3s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Grand Hotel Meridian"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Grand Hotel Meridian
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.4s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Coastal Café"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Coastal Café
-                </h3>
-              </div>
-
-              <div
-                className="group animate-on-scroll fade-in-up text-center"
-                style={{ animationDelay: "0.5s" }}
-              >
-                <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Image
-                    src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Metropolitan Suites"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors duration-300 underline">
-                  Metropolitan Suites
-                </h3>
-              </div>
-            </div>
-          </div>
-        </section>
+        <BrandsSection />
 
         {/* Book Your Party Section */}
         <section id="book-party" className="py-24 bg-gray-50 section-reveal">
@@ -2418,7 +2306,9 @@ export default function Home() {
             <div className="flex justify-center">
               {/* Contact Form */}
               <div className="w-full max-w-2xl animate-on-scroll fade-in-up">
-                <h3 className="text-2xl font-bold mb-6 text-center">Send us a message</h3>
+                <h3 className="text-2xl font-bold mb-6 text-center">
+                  Send us a message
+                </h3>
                 <form onSubmit={handleFormSubmit} className="space-y-6">
                   <div className="form-input-animation">
                     <label

@@ -6,7 +6,7 @@ import type { OurFileRouter } from "@/app/api/uploadthing/core";
 import { toast } from "sonner";
 import DeleteConfirmModal from "@/app/components/DeleteConfirmModal";
 
-interface Business {
+interface Brand {
   _id: string;
   name: string;
   image: string;
@@ -20,12 +20,12 @@ interface Business {
   };
 }
 
-export default function BusinessesPage() {
-  const [businesses, setBusinesses] = useState<Business[]>([]);
+export default function BrandsPage() {
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
+  const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     image: "",
@@ -39,43 +39,43 @@ export default function BusinessesPage() {
     },
   });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [businessToDelete, setBusinessToDelete] = useState<string | null>(null);
+  const [brandToDelete, setBrandToDelete] = useState<string | null>(null);
 
-  const fetchBusinesses = useCallback(async () => {
-    console.log("fetching businesses");
+  const fetchBrands = useCallback(async () => {
+    console.log("fetching brands");
 
     try {
       const res = await fetch("/api/businesses");
       if (!res.ok) {
-        throw new Error("Failed to fetch businesses");
+        throw new Error("Failed to fetch brands");
       }
       const data = await res.json();
       // Ensure we're getting an array and mapping the data correctly
-      const validBusinesses = Array.isArray(data) ? data : [];
-      setBusinesses(
-        validBusinesses.map((business: any) => ({
-          _id: business._id,
-          name: business.name,
-          image: business.image,
-          description: business.description,
-          link: business.link,
-          socials: business.socials || {},
+      const validBrands = Array.isArray(data) ? data : [];
+      setBrands(
+        validBrands.map((brand: any) => ({
+          _id: brand._id,
+          name: brand.name,
+          image: brand.image,
+          description: brand.description,
+          link: brand.link,
+          socials: brand.socials || {},
         }))
       );
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to load businesses";
+        error instanceof Error ? error.message : "Failed to load brands";
       toast.error(errorMessage);
       setError(errorMessage);
-      setBusinesses([]);
+      setBrands([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchBusinesses();
-  }, [fetchBusinesses]);
+    fetchBrands();
+  }, [fetchBrands]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,32 +105,32 @@ export default function BusinessesPage() {
     };
 
     const promise = fetch("/api/businesses", {
-      method: editingBusiness ? "PUT" : "POST",
+      method: editingBrand ? "PUT" : "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(
-        editingBusiness
-          ? { ...submitData, id: editingBusiness._id }
+        editingBrand
+          ? { ...submitData, id: editingBrand._id }
           : submitData
       ),
     }).then(async (res) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      await fetchBusinesses();
+      await fetchBrands();
       setIsModalOpen(false);
       resetForm();
     });
 
     toast.promise(promise, {
-      loading: editingBusiness
-        ? "Updating business..."
-        : "Creating business...",
-      success: editingBusiness
-        ? "Business updated successfully!"
-        : "Business created successfully!",
+      loading: editingBrand
+        ? "Updating brand..."
+        : "Creating brand...",
+      success: editingBrand
+        ? "Brand updated successfully!"
+        : "Brand created successfully!",
       error: (err) => err.message || "Operation failed",
     });
   };
@@ -147,7 +147,7 @@ export default function BusinessesPage() {
   };
 
   const handleConfirmDelete = async () => {
-    if (!businessToDelete) return;
+    if (!brandToDelete) return;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -155,7 +155,7 @@ export default function BusinessesPage() {
       return;
     }
 
-    const promise = fetch(`/api/businesses?id=${businessToDelete}`, {
+    const promise = fetch(`/api/businesses?id=${brandToDelete}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -163,7 +163,7 @@ export default function BusinessesPage() {
     }).then(async (res) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      await fetchBusinesses();
+      await fetchBrands();
     });
 
     toast.promise(promise, {
@@ -221,7 +221,7 @@ export default function BusinessesPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Businesses</h1>
+        <h1 className="text-2xl font-bold">Brands</h1>
         <button
           onClick={() => {
             resetForm();
@@ -239,19 +239,19 @@ export default function BusinessesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {businesses.map((business) => (
+          {brands.map((brand) => (
             <div
-              key={business._id}
+              key={brand._id}
               className="bg-white rounded-lg shadow-md overflow-hidden"
             >
               <img
                 src={business.image}
-                alt={business.name}
+                alt={brand.name}
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{business.name}</h2>
-                <p className="text-gray-600 mb-4">{business.description}</p>
+                <h2 className="text-xl font-semibold mb-2">{brand.name}</h2>
+                <p className="text-gray-600 mb-4">{brand.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {business.socials?.website && (
                     <a
@@ -319,7 +319,7 @@ export default function BusinessesPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 w-full max-w-lg">
             <h2 className="text-xl font-semibold mb-4">
-              {editingBusiness ? "Edit Business" : "Add Business"}
+              {editingBrand ? "Edit Business" : "Add Business"}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -489,7 +489,7 @@ export default function BusinessesPage() {
                   type="submit"
                   className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                 >
-                  {editingBusiness ? "Update" : "Create"}
+                  {editingBrand ? "Update" : "Create"}
                 </button>
               </div>
             </form>

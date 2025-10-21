@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       hasPassword: !!password,
       hasExpectedPassword: !!ADMIN_PASS,
       usernameMatch: username === ADMIN_USER,
-      passwordMatch: password === ADMIN_PASS
+      passwordMatch: password === ADMIN_PASS,
     });
 
     if (username !== ADMIN_USER || password !== ADMIN_PASS) {
