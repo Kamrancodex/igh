@@ -111,9 +111,7 @@ export default function BrandsPage() {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(
-        editingBrand
-          ? { ...submitData, id: editingBrand._id }
-          : submitData
+        editingBrand ? { ...submitData, id: editingBrand._id } : submitData
       ),
     }).then(async (res) => {
       const data = await res.json();
@@ -125,9 +123,7 @@ export default function BrandsPage() {
     });
 
     toast.promise(promise, {
-      loading: editingBrand
-        ? "Updating brand..."
-        : "Creating brand...",
+      loading: editingBrand ? "Updating brand..." : "Creating brand...",
       success: editingBrand
         ? "Brand updated successfully!"
         : "Brand created successfully!",

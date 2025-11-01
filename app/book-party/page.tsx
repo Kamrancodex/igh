@@ -40,19 +40,20 @@ export default function BookPartyPage() {
               PLAN YOUR EVENT WITH US!
             </h1>
             <p className="text-gray-600 text-lg mb-8">
-              Browse all our venues below. For general inquiries, please email{" "}
+              Click on a location below to browse our event venues. For general
+              inquiries, please email{" "}
               <a
-                href="mailto:PARTY@ICGARS.COM"
+                href="mailto:inquiries@marigoldcatering.com"
                 className="text-orange-500 hover:text-orange-600 transition-colors"
               >
-                PARTY@ICGARS.COM
+                inquiries@marigoldcatering.com
               </a>{" "}
-              OR CALL{" "}
+              or call{" "}
               <a
-                href="tel:312-462-3671"
+                href="tel:216-566-5400"
                 className="text-orange-500 hover:text-orange-600 transition-colors"
               >
-                312.462.3671
+                (216) 566-5400
               </a>
             </p>
           </div>

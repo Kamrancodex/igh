@@ -37,7 +37,9 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.linkedin.com/search/results/all/?fetchDeterministicClustersOnly=true&heroEntityKey=urn%3Ali%3Aorganization%3A104882452&keywords=icon%20group%20hospitality&origin=RICH_QUERY_SUGGESTION&position=0&searchId=e2ac84b7-91ab-4f72-a89c-bf721d122a8d&sid=-4w&spellCorrectionEnabled=false"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
               >
                 <Linkedin className="h-5 w-5" />

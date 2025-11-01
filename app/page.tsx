@@ -961,7 +961,7 @@ export default function Home() {
             if (target.includes("$") && target.includes("K")) {
               counter.textContent = "$" + currentCount + "K+";
             } else {
-            counter.textContent = currentCount + suffix;
+              counter.textContent = currentCount + suffix;
             }
           }
 
@@ -1406,20 +1406,20 @@ export default function Home() {
                 className="text-gray-600 text-lg animate-on-scroll fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
-                Click on a location below or scroll down to browse all venues.
-                For general inquiries, please email{" "}
+                Click on a location below to browse our event venues. For general
+                inquiries, please email{" "}
                 <a
-                  href="mailto:PARTY@ICGARS.COM"
+                  href="mailto:inquiries@marigoldcatering.com"
                   className="text-orange-500 hover:text-orange-600 transition-colors"
                 >
-                  PARTY@ICGARS.COM
+                  inquiries@marigoldcatering.com
                 </a>{" "}
-                OR CALL{" "}
+                or call{" "}
                 <a
-                  href="tel:312-462-3671"
+                  href="tel:216-566-5400"
                   className="text-orange-500 hover:text-orange-600 transition-colors"
                 >
-                  312.462.3671
+                  (216) 566-5400
                 </a>
               </p>
             </div>
@@ -1693,17 +1693,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* View More Button */}
-            <div className="text-center mt-16">
-              <Link
-                href="/book-party"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-all duration-300 group"
-              >
-                View More Venues
-                <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
-              </Link>
             </div>
           </div>
         </section>
@@ -1987,7 +1976,9 @@ export default function Home() {
               <div className="social-icons-container mt-16 animate-on-scroll fade-in-up delay-600">
                 <div className="flex justify-center">
                   <Link
-                    href="#"
+                    href="https://www.linkedin.com/search/results/all/?fetchDeterministicClustersOnly=true&heroEntityKey=urn%3Ali%3Aorganization%3A104882452&keywords=icon%20group%20hospitality&origin=RICH_QUERY_SUGGESTION&position=0&searchId=e2ac84b7-91ab-4f72-a89c-bf721d122a8d&sid=-4w&spellCorrectionEnabled=false"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="employment-social-icon"
                     aria-label="LinkedIn"
                   >
@@ -2413,7 +2404,9 @@ export default function Home() {
                 </p>
                 <div className="flex space-x-4">
                   <a
-                    href="#"
+                    href="https://www.linkedin.com/search/results/all/?fetchDeterministicClustersOnly=true&heroEntityKey=urn%3Ali%3Aorganization%3A104882452&keywords=icon%20group%20hospitality&origin=RICH_QUERY_SUGGESTION&position=0&searchId=e2ac84b7-91ab-4f72-a89c-bf721d122a8d&sid=-4w&spellCorrectionEnabled=false"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="bg-gray-800 hover:bg-orange-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300"
                     aria-label="LinkedIn"
                   >
