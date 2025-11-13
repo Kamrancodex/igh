@@ -851,7 +851,7 @@ export default function Home() {
     {
       id: 1,
       name: "Georges Aoun",
-      title: "CEO & Founder",
+      title: "Co-founder & CEO",
       image: "/team-1.jpeg",
       socials: {
         twitter: "https://twitter.com",
@@ -860,12 +860,12 @@ export default function Home() {
         behance: "https://behance.com",
       },
       description:
-        "George brings over 15 years of experience in luxury hospitality management. His innovative vision and strategic leadership have transformed countless hospitality venues into industry-leading destinations. He specializes in creating unique guest experiences that combine operational excellence with creative design elements.",
+        "Georges brings over 15 years of experience in luxury hospitality management. His innovative vision and strategic leadership have transformed countless hospitality venues into industry-leading destinations. He specializes in creating unique guest experiences that combine operational excellence with creative design elements.",
     },
     {
       id: 2,
       name: "Anthony Hamilton",
-      title: "Chef",
+      title: "Co-founder & COO",
       image: "/team-2.png",
       socials: {
         twitter: "https://twitter.com",
@@ -874,14 +874,13 @@ export default function Home() {
         behance: "https://behance.com",
       },
       description:
-        "Chef Anthony Hamilton is a 2003 graduate of the Culinary Institute of American in Hyde Park, New York, as well a 2010 graduate of Kent State University's Hospitality Management program. Hamilton has more than 20 years of restaurant and hospitality working experience, ranging from quick-service outlets to full-service catering to fine dining. He has held positions in all areas of the restaurant industry with most notably chef de cuisine, executive chef, corporate chef, chef/consultant, and director of operations.",
+        "Anthony is a 2003 graduate of the Culinary Institute of American in Hyde Park, New York, as well as a 2010 graduate of Kent State University's Hospitality Management program. Hamilton has more than 20 years of restaurant and hospitality working experience, ranging from quick-service outlets to full-service catering to fine dining. He has held positions in all areas of the restaurant industry with most notably chef de cuisine, executive chef, corporate chef, chef/consultant and director of operations.",
     },
     {
       id: 3,
-      name: "Sophia Chen",
-      title: "Creative Director",
-      image:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by-wYWdlfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      name: "Bree Sabin",
+      title: "Director of Marketing & Guest Relations",
+      image: "/IMG_1073_2.jpg",
       socials: {
         twitter: "https://twitter.com",
         facebook: "https://facebook.com",
@@ -889,7 +888,7 @@ export default function Home() {
         behance: "https://behance.com",
       },
       description:
-        "Sophia leads our design and branding initiatives, bringing spaces to life through thoughtful, immersive design. Her background in hospitality architecture and interior design enables her to create environments that are both aesthetically stunning and functionally exceptional. She specializes in developing unique brand identities that resonate with target audiences.",
+        "Bree leads marketing and public relations for Icon Group Hospitality, where she oversees brand strategy, digital presence, and community engagement across the company's portfolio of restaurants and venues. With a background in storytelling and relationship-building, Bree is passionate about creating authentic connections between guests and the Icon brand. Her thoughtful, hands-on approach helps shape the company's voice and ensures every concept resonates with its audience.",
     },
   ];
 
@@ -1406,8 +1405,8 @@ export default function Home() {
                 className="text-gray-600 text-lg animate-on-scroll fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
-                Click on a location below to browse our event venues. For general
-                inquiries, please email{" "}
+                Click on a location below to browse our event venues. For
+                general inquiries, please email{" "}
                 <a
                   href="mailto:inquiries@marigoldcatering.com"
                   className="text-orange-500 hover:text-orange-600 transition-colors"
