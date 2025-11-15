@@ -81,7 +81,14 @@ export default function DashboardLayout({
             </p>
             <p className="text-sm text-gray-500">
               Powered by{" "}
-              <span className="font-semibold text-[#4475F2]">RDJ MEDIA</span>
+              <a 
+                href="https://rdj.media" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="font-semibold text-[#4475F2] hover:text-[#3366E6] transition-colors duration-200 underline-animation"
+              >
+                RDJ MEDIA
+              </a>
             </p>
           </div>
         </div>

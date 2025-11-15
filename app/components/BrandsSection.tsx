@@ -43,6 +43,45 @@ export default function BrandsSection() {
     fetchBrands();
   }, []);
 
+  // Add intersection observer for animations
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1,
+    };
+
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate-in");
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+
+    // Target all elements with the animate-on-scroll class within this component
+    const animateElements = document.querySelectorAll("#brands .animate-on-scroll");
+    animateElements.forEach((el) => {
+      observer.observe(el);
+    });
+
+    // Fallback to make content visible after a delay
+    const timeout = setTimeout(() => {
+      animateElements.forEach((el) => {
+        if (!el.classList.contains("animate-in")) {
+          el.classList.add("animate-in");
+        }
+      });
+    }, 1000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timeout);
+    };
+  }, [brands]); // Re-run when brands data changes
+
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -59,7 +98,7 @@ export default function BrandsSection() {
             {brands.map((brand, index) => (
               <div
                 key={brand._id}
-                className="group animate-on-scroll fade-in-up text-center"
+                className="group animate-on-scroll fade-in-up text-center brand-card"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="relative overflow-hidden rounded-lg mb-6 aspect-square bg-white shadow-lg group-hover:shadow-xl transition-shadow duration-300">

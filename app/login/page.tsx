@@ -126,7 +126,14 @@ export default function Login() {
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-400">
             Powered by{" "}
-            <span className="font-semibold text-[#4475F2]">RDJ MEDIA</span>
+            <a 
+              href="https://rdj.media" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="font-semibold text-[#4475F2] hover:text-[#3366E6] transition-colors duration-200 underline-animation"
+            >
+              RDJ MEDIA
+            </a>
           </p>
         </div>
       </div>

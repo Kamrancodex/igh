@@ -2503,9 +2503,14 @@ export default function Home() {
                   </p>
                   <p className="mt-1">
                     Powered by{" "}
-                    <span className="text-orange-500 font-medium">
+                    <a 
+                      href="https://rdj.media" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-orange-500 font-medium hover:text-orange-600 transition-colors duration-200 underline-animation"
+                    >
                       RDJ MEDIA
-                    </span>
+                    </a>
                   </p>
                 </div>
                 <div className="flex space-x-6 text-gray-500 text-sm">

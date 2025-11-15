@@ -548,6 +548,25 @@ html {
   }
 }
 
+/* Ensure brand cards are visible - fallback styles */
+.brand-card {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Override animation styles for brand cards specifically */
+#brands .animate-on-scroll.brand-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Still allow hover and other animations */
+#brands .brand-card.animate-on-scroll.fade-in-up {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
 /* Social icons animation */
 .social-icons-container {
   position: relative;
