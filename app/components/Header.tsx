@@ -26,7 +26,7 @@ export default function Header() {
       <div className="container mx-auto px-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <img src="/logo.svg" alt="Logo" className="h-8" />
+            <img src={isScrolled ? "/logo.png" : "/logo-blaxk.png"} alt="Logo" className="h-8" />
           </div>
 
           {/* Desktop Navigation */}

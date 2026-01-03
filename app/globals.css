@@ -3020,3 +3020,19 @@ footer input:focus {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Infinite Horizontal Scroll Animation */
+@keyframes scroll-infinite {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+  display: flex;
+  width: max-content;
+  animation: scroll-infinite 40s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}

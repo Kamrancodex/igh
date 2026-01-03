@@ -130,7 +130,7 @@ export default function GalleryPage() {
         <div className="container mx-auto flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/logo.png"
+              src="/logo-blaxk.png"
               alt="Logo"
               width={120}
               height={40}

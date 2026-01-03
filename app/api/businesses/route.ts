@@ -31,20 +31,32 @@ export async function GET(request: Request) {
       .find()
       .toArray();
 
-    // Transform the data to ensure consistent format
-    const transformedBusinesses = businesses.map((business) => ({
-      _id: business._id?.toString() || "",
-      name: business.name || "",
-      image: business.image || "",
-      description: business.description || "",
-      link: business.link || "",
-      socials: business.socials || {
-        instagram: "",
-        facebook: "",
-        twitter: "",
-        website: "",
-      },
-    }));
+    const transformedBusinesses = businesses.map((business) => {
+      let image = business.image || "";
+      
+      // Override images for specific businesses
+      if (business.name === "Fa-ray's") {
+        image = "/FaRays_Logo.png";
+      } else if (business.name === "Hog Heaven") {
+        image = "/HH.png";
+      } else if (business.name === "The JNG Grill") {
+        image = "/JNG.png";
+      }
+
+      return {
+        _id: business._id?.toString() || "",
+        name: business.name || "",
+        image: image,
+        description: business.description || "",
+        link: business.link || "",
+        socials: business.socials || {
+          instagram: "",
+          facebook: "",
+          twitter: "",
+          website: "",
+        },
+      };
+    });
 
     return NextResponse.json(transformedBusinesses);
   } catch (error) {

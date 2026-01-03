@@ -21,7 +21,7 @@ export default function BookPartyPage() {
             </Link>
             <div className="flex items-center">
               <Image
-                src="/logo.png"
+                src="/logo-blaxk.png"
                 alt="Icon Group Hospitality Logo"
                 width={60}
                 height={60}

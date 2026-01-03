@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import BrandsSection from "./components/BrandsSection";
+import LogoTicker from "./components/LogoTicker";
 import NewsletterSection from "../components/newsletter-section";
 import { Toaster, toast } from "sonner";
 
@@ -846,51 +847,35 @@ export default function Home() {
     };
   }, []);
 
-  // Team members data
-  const teamMembers: TeamMember[] = [
-    {
-      id: 1,
-      name: "Georges Aoun",
-      title: "Co-founder & CEO",
-      image: "/team-1.jpeg",
-      socials: {
-        twitter: "https://twitter.com",
-        facebook: "https://facebook.com",
-        linkedin: "https://linkedin.com",
-        behance: "https://behance.com",
-      },
-      description:
-        "Georges brings over 15 years of experience in luxury hospitality management. His innovative vision and strategic leadership have transformed countless hospitality venues into industry-leading destinations. He specializes in creating unique guest experiences that combine operational excellence with creative design elements.",
-    },
-    {
-      id: 2,
-      name: "Anthony Hamilton",
-      title: "Co-founder & COO",
-      image: "/team-2.png",
-      socials: {
-        twitter: "https://twitter.com",
-        facebook: "https://facebook.com",
-        linkedin: "https://linkedin.com",
-        behance: "https://behance.com",
-      },
-      description:
-        "Anthony is a 2003 graduate of the Culinary Institute of American in Hyde Park, New York, as well as a 2010 graduate of Kent State University's Hospitality Management program. Hamilton has more than 20 years of restaurant and hospitality working experience, ranging from quick-service outlets to full-service catering to fine dining. He has held positions in all areas of the restaurant industry with most notably chef de cuisine, executive chef, corporate chef, chef/consultant and director of operations.",
-    },
-    {
-      id: 3,
-      name: "Bree Sabin",
-      title: "Director of Marketing & Guest Relations",
-      image: "/IMG_1073_2.jpg",
-      socials: {
-        twitter: "https://twitter.com",
-        facebook: "https://facebook.com",
-        linkedin: "https://linkedin.com",
-        behance: "https://behance.com",
-      },
-      description:
-        "Bree leads marketing and public relations for Icon Group Hospitality, where she oversees brand strategy, digital presence, and community engagement across the company's portfolio of restaurants and venues. With a background in storytelling and relationship-building, Bree is passionate about creating authentic connections between guests and the Icon brand. Her thoughtful, hands-on approach helps shape the company's voice and ensures every concept resonates with its audience.",
-    },
-  ];
+  // Team members data - now fetched from API
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [teamLoading, setTeamLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        const res = await fetch("/api/team");
+        const data = await res.json();
+        if (res.ok && Array.isArray(data)) {
+          // Transform API data to match component interface
+          const transformedData = data.map((member: any) => ({
+            id: member._id,
+            name: member.name,
+            title: member.title,
+            image: member.image,
+            socials: member.socials,
+            description: member.description,
+          }));
+          setTeamMembers(transformedData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch team members:", error);
+      } finally {
+        setTeamLoading(false);
+      }
+    };
+    fetchTeamMembers();
+  }, []);
 
   // Impact data
   const impactStats = [
@@ -1044,7 +1029,7 @@ export default function Home() {
             <div className="flex items-center">
               <div className="logo-container relative">
                 <Image
-                  src="/logo.png"
+                  src={scrollY > 50 ? "/logo.png" : "/logo-blaxk.png"}
                   alt="Icon Group Hospitality Logo"
                   width={120}
                   height={40}
@@ -1124,6 +1109,19 @@ export default function Home() {
           id="home"
           className="pt-20 min-h-screen flex flex-col bg-white text-black relative overflow-hidden"
         >
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0 select-none pointer-events-none">
+            <Image
+              src="/BEHIND%20ICON%20GROUP.jpg"
+              alt="Hero Background"
+              fill
+              className="object-cover"
+              priority
+            />
+            {/* Overlay to ensure text visibility if needed, adjusting opacity as appropriate */}
+            <div className="absolute inset-0 bg-white/10"></div>
+          </div>
+
           {/* Animated background particles */}
           <div className="particles-bg">
             {Array.from({ length: 50 }).map((_, index) => (
@@ -1221,7 +1219,7 @@ export default function Home() {
               {/* Top row */}
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/_KOS6131.jpg"
                   alt="Restaurant interior"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1229,7 +1227,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/7A3D9318-4247-468C-A88A-2F03A88F0A5E.jpg"
                   alt="Luxury hotel bar"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1237,7 +1235,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/565168874_1398663595597475_5165834476337596943_n.jpg"
                   alt="Fine dining experience"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1245,7 +1243,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1544148103-0773bf10d330?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/DSC00183.jpg"
                   alt="Luxury hotel interior"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1253,7 +1251,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/IMG_0947.jpeg"
                   alt="Hotel spa service"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1261,7 +1259,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/IMG_5606.JPG"
                   alt="Restaurant ambiance"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1271,7 +1269,7 @@ export default function Home() {
               {/* Bottom row */}
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/IMG_5612%202.JPG"
                   alt="Restaurant kitchen"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1279,7 +1277,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/IMG_5714.jpeg"
                   alt="Hotel room service"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1287,7 +1285,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/IMG_6025.JPG"
                   alt="Luxury hotel lobby"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1295,7 +1293,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/thumbnail_image1-3.jpg"
                   alt="Hotel dining area"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1303,7 +1301,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/USE%20FOR%20main%20photo%20of%20the%20app.jpg"
                   alt="Restaurant service"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1311,7 +1309,7 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden group">
                 <Image
-                  src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/behind%20exceptional%20hospitality/Weddings%20Button.jpg"
                   alt="Hotel reception"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -1696,183 +1694,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section
-          id="testimonials"
-          className="py-24 bg-white border-t border-gray-100 section-reveal overflow-x-hidden"
-        >
-          <div className="container mx-auto px-4 sm:px-6 mb-16 overflow-hidden">
-            <h2 className="text-6xl md:text-7xl font-bold tracking-tighter text-center animate-on-scroll fade-in-up">
-              TRUSTED BY
-              <br />
-              INTERNATIONAL BRANDS
-            </h2>
-          </div>
 
-          {/* First row - moving right */}
-          <div className="testimonial-row-right mb-8">
-            <div className="testimonial-track-right">
-              {testimonials.slice(0, 4).map((testimonial) => (
-                <div
-                  key={testimonial.id}
-                  className="testimonial-card hover-card"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-                      <Image
-                        src={testimonial.image || "/placeholder.svg"}
-                        alt={testimonial.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">
-                        {testimonial.name}
-                      </h3>
-                      <p className="text-gray-500 text-sm">
-                        {testimonial.title}
-                      </p>
-                    </div>
-                    <div className="ml-auto">
-                      <Image
-                        src={testimonial.logo || "/placeholder.svg"}
-                        alt={`${testimonial.title} logo`}
-                        width={80}
-                        height={40}
-                        className="h-10 w-auto object-contain"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-base">
-                    "{testimonial.quote}"
-                  </p>
-                </div>
-              ))}
-              {testimonials.slice(0, 4).map((testimonial) => (
-                <div
-                  key={`duplicate-${testimonial.id}`}
-                  className="testimonial-card hover-card"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-                      <Image
-                        src={testimonial.image || "/placeholder.svg"}
-                        alt={testimonial.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">
-                        {testimonial.name}
-                      </h3>
-                      <p className="text-gray-500 text-sm">
-                        {testimonial.title}
-                      </p>
-                    </div>
-                    <div className="ml-auto">
-                      <Image
-                        src={testimonial.logo || "/placeholder.svg"}
-                        alt={`${testimonial.title} logo`}
-                        width={80}
-                        height={40}
-                        className="h-10 w-auto object-contain"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-base">
-                    "{testimonial.quote}"
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Second row - moving left */}
-          <div className="testimonial-row-left">
-            <div className="testimonial-track-left">
-              {testimonials.slice(4, 8).map((testimonial) => (
-                <div
-                  key={testimonial.id}
-                  className="testimonial-card hover-card"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-                      <Image
-                        src={testimonial.image || "/placeholder.svg"}
-                        alt={testimonial.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">
-                        {testimonial.name}
-                      </h3>
-                      <p className="text-gray-500 text-sm">
-                        {testimonial.title}
-                      </p>
-                    </div>
-                    <div className="ml-auto">
-                      <Image
-                        src={testimonial.logo || "/placeholder.svg"}
-                        alt={`${testimonial.title} logo`}
-                        width={80}
-                        height={40}
-                        className="h-10 w-auto object-contain"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-base">
-                    "{testimonial.quote}"
-                  </p>
-                </div>
-              ))}
-              {testimonials.slice(4, 8).map((testimonial) => (
-                <div
-                  key={`duplicate-${testimonial.id}`}
-                  className="testimonial-card hover-card"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-                      <Image
-                        src={testimonial.image || "/placeholder.svg"}
-                        alt={testimonial.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">
-                        {testimonial.name}
-                      </h3>
-                      <p className="text-gray-500 text-sm">
-                        {testimonial.title}
-                      </p>
-                    </div>
-                    <div className="ml-auto">
-                      <Image
-                        src={testimonial.logo || "/placeholder.svg"}
-                        alt={`${testimonial.title} logo`}
-                        width={80}
-                        height={40}
-                        className="h-10 w-auto object-contain"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-base">
-                    "{testimonial.quote}"
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Contact Section */}
         <section
@@ -2376,6 +2198,9 @@ export default function Home() {
 
         {/* Newsletter Section - Commented out for future re-enabling */}
         {/* <NewsletterSection createRipple={createRipple} /> */}
+
+        {/* Partners Logo Ticker */}
+        <LogoTicker />
 
         {/* Footer */}
         <footer className="bg-[#111827] text-white pt-32 pb-10">
